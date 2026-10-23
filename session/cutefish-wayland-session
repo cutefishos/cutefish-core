@@ -6,4 +6,11 @@ export DESKTOP_SESSION=Cutefish
 export XDG_SESSION_TYPE=wayland
 export WAYLAND_DISPLAY=cutefish-0
 unset DISPLAY XAUTHORITY WAYLAND_SOCKET
+
+# A display manager starts this session directly, so the profile scripts never
+# run: bring in what Flatpak exports its applications to.
+if [ -r /etc/profile.d/flatpak.sh ]; then
+    . /etc/profile.d/flatpak.sh
+fi
+
 exec /usr/bin/cutefish-session "$@"
