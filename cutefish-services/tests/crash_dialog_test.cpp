@@ -5,7 +5,6 @@
 #include "crashdialog.h"
 
 #include "ui/application.h"
-#include "ui/dialog_window.h"
 #include "ui/text_area.h"
 #include "ui/view.h"
 #include "ui/window.h"
@@ -39,7 +38,7 @@ static bool shown(const View *view)
     return true;
 }
 
-TEST(CrashDialogTest, LanguageChangeKeepsTheDetailsShown)
+TEST(CrashDialogTest, LanguageChangeKeepsTheReportShown)
 {
     int lookups = 0;
     CrashDialog dialog(CrashDialog::Kind::Application, "org.example.Editor", [&lookups] {
@@ -60,7 +59,6 @@ TEST(CrashDialogTest, LanguageChangeKeepsTheDetailsShown)
     dialog.window()->grab();
 
     View *before = dialog.window()->contentView();
-    findFirst<DialogButton>(before)->onClicked();
     ASSERT_TRUE(shown(findFirst<TextArea>(before)));
 
     Application::instance()->languageChanged.emit();

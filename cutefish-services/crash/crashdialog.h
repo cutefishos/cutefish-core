@@ -13,7 +13,6 @@
 #include "base/signal.h"
 
 namespace cutefish::ui {
-class DialogButton;
 class Label;
 class TextArea;
 class View;
@@ -57,7 +56,6 @@ private:
     void buildContent();
     void retranslate();
     void update();
-    void setDetailsShown(bool shown);
     void accept();
 
     Kind m_kind;
@@ -69,13 +67,11 @@ private:
     Coredump m_dump;
     bool m_hasDump = false;
     bool m_finished = false;
-    bool m_detailsShown = false;
     bool m_reopening = false;
     std::shared_ptr<bool> m_alive = std::make_shared<bool>(true);
     std::unique_ptr<cutefish::ui::Window> m_window;
     cutefish::ui::Label *m_text = nullptr;
     cutefish::ui::View *m_reportFrame = nullptr;
     cutefish::ui::TextArea *m_report = nullptr;
-    cutefish::ui::DialogButton *m_detailsButton = nullptr;
     cutefish::base::Subscription m_languageChanged;
 };

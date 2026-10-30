@@ -127,14 +127,6 @@ msgid "“{name}” quit unexpectedly"
 msgstr ""
 
 #: cutefish-services/crash/crashdialog.cpp
-msgid "Hide Details"
-msgstr ""
-
-#: cutefish-services/crash/crashdialog.cpp
-msgid "Show Details"
-msgstr ""
-
-#: cutefish-services/crash/crashdialog.cpp
 msgid "Close"
 msgstr ""
 

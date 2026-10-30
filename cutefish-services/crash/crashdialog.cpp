@@ -24,9 +24,8 @@ using namespace cutefish::ui;
 using cutefish::i18n::format;
 using cutefish::i18n::tr;
 
-// Wider only for the report, whose lines do not wrap.
-static constexpr double kWidth = 400;
-static constexpr double kDetailsWidth = 520;
+// Wide enough for the report, whose lines do not wrap.
+static constexpr double kWidth = 520;
 static constexpr double kMargin = 16;
 // A drag this far from the press moves the window.
 static constexpr double kDragDistance = 10;
@@ -149,7 +148,7 @@ void CrashDialog::show()
     });
 }
 
-// The views are made again; the details stay shown or hidden.
+// The views are made again.
 void CrashDialog::retranslate()
 {
     if (m_finished)
@@ -204,10 +203,6 @@ void CrashDialog::buildContent()
     auto *buttons = content->addChild<RowLayout>();
     buttons->setSpacing(8);
     buttons->setLayoutHints({.fillWidth = true});
-    m_detailsButton = buttons->addChild<DialogButton>(m_detailsShown ? tr("Hide Details") : tr("Show Details"));
-    m_detailsButton->onClicked = [this] {
-        setDetailsShown(!m_detailsShown);
-    };
     auto *spacer = buttons->addChild<View>();
     spacer->setLayoutHints({.fillWidth = true});
     auto *closeButton = buttons->addChild<DialogButton>(tr("Close"));
@@ -241,20 +236,7 @@ void CrashDialog::update()
     const std::string details = report();
     if (m_report->text() != details)
         m_report->setText(details);
-    m_detailsButton->setVisible(!details.empty());
-    m_reportFrame->setVisible(m_detailsShown && !details.empty());
-}
-
-void CrashDialog::setDetailsShown(bool shown)
-{
-    m_detailsShown = shown;
-    m_detailsButton->setText(shown ? tr("Hide Details") : tr("Show Details"));
-    // The fitted size bounds the window; the new width needs room first.
-    m_window->setMinimumSize({});
-    m_window->setMaximumSize({16777215, 16777215});
-    m_window->resize({shown ? kDetailsWidth : kWidth, 0});
-    m_window->setFitsContentHeight(true);
-    update();
+    m_reportFrame->setVisible(!details.empty());
 }
 
 void CrashDialog::accept()
