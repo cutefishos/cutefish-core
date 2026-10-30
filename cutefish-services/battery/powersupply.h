@@ -4,8 +4,8 @@
 #ifndef POWERSUPPLY_H
 #define POWERSUPPLY_H
 
-#include <map>
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -19,7 +19,7 @@ class Battery;
 class PowerSupply
 {
 public:
-    // UPower on `system`; the battery that holds the path is published on `session`.
+    // UPower on `system`; the batteries, taken together, are published on `session`.
     PowerSupply(cutefish::base::dbus::Connection *system, cutefish::base::dbus::Connection *session,
                 cutefish::base::Settings &settings);
     ~PowerSupply();
@@ -38,16 +38,16 @@ private:
     void readFlags(const cutefish::base::dbus::VariantMap &values);
     void addBattery(const std::string &path);
     void removeBattery(const std::string &path);
-    void publishBattery();
+    void publishBatteries();
 
     cutefish::base::dbus::Connection *m_system;
     cutefish::base::dbus::Connection *m_session;
     cutefish::base::Settings &m_settings;
     cutefish::base::dbus::Proxy m_upower;
     std::vector<cutefish::base::dbus::Match> m_matches;
-    // By UPower device path.
-    std::map<std::string, std::unique_ptr<Battery>> m_batteries;
-    Battery *m_published = nullptr;
+    // The UPower device paths of the batteries that power the computer.
+    std::set<std::string> m_batteries;
+    std::unique_ptr<Battery> m_published;
     bool m_onBattery = false;
     bool m_hasLid = false;
     bool m_lidClosed = false;

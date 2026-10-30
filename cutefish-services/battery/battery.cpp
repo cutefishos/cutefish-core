@@ -17,6 +17,7 @@ using cutefish::i18n::trNoop;
 
 static constexpr auto s_lastChargedPercentKey = "Battery/LastChargedPercent";
 static constexpr auto s_lastChargedSecsKey = "Battery/LastChargedSecs";
+static constexpr auto s_displayDevice = "/org/freedesktop/UPower/devices/DisplayDevice";
 
 static int64_t secondsSinceEpoch()
 {
@@ -32,10 +33,10 @@ static T property(const dbus::VariantMap &properties, const char *name)
     return it == properties.end() ? T() : it->second.get<T>().value_or(T());
 }
 
-Battery::Battery(dbus::Connection *system, const std::string &path, Settings &settings)
-    : m_path(path)
+Battery::Battery(dbus::Connection *system, Settings &settings)
+    : m_system(system)
     , m_settings(settings)
-    , m_device(system, upower::service, path, upower::deviceInterface)
+    , m_device(system, upower::service, s_displayDevice, upower::deviceInterface)
 {
     if (system) {
         m_propertiesChanged = m_device.onPropertiesChanged(
@@ -60,24 +61,20 @@ Battery::Battery(dbus::Connection *system, const std::string &path, Settings &se
 
 Battery::~Battery() = default;
 
-bool Battery::powersComputer() const
-{
-    return m_reading.type == upower::batteryType;
-}
-
 Battery::Reading Battery::read() const
 {
     const dbus::VariantMap properties = m_device.getAll().value<dbus::VariantMap>().value_or(dbus::VariantMap());
 
     Reading reading;
-    reading.type = property<uint32_t>(properties, "Type");
     reading.state = property<uint32_t>(properties, "State");
     reading.percent = int(std::lround(property<double>(properties, "Percentage")));
-    reading.capacity = int(property<double>(properties, "Capacity"));
-    reading.voltage = property<double>(properties, "Voltage");
     reading.timeToEmpty = property<int64_t>(properties, "TimeToEmpty");
     reading.timeToFull = property<int64_t>(properties, "TimeToFull");
     reading.thresholdEnabled = property<bool>(properties, "ChargeThresholdEnabled");
+
+    // Some UPower versions leave the limit out of the display device.
+    for (const auto &[path, enabled] : m_batteryThresholds)
+        reading.thresholdEnabled = reading.thresholdEnabled || enabled;
     return reading;
 }
 
@@ -177,7 +174,7 @@ std::string Battery::lastChargedTime() const
 
 bool Battery::publish(dbus::Connection *session)
 {
-    if (!powersComputer() || !session)
+    if (!session)
         return false;
 
     auto object = std::make_unique<dbus::Object>(session, "/org/cutefish/Services/Battery",
@@ -185,21 +182,23 @@ bool Battery::publish(dbus::Connection *session)
     object->addMethod("refresh", [this] { m_device.send("Refresh"); });
     object->addProperty("chargeState", [this] { return int32_t(m_reading.chargeState()); });
     object->addProperty("chargePercent", [this] { return int32_t(m_reading.percent); });
-    object->addProperty("capacity", [this] { return int32_t(m_reading.capacity); });
-    object->addProperty("voltage", [this] { return m_reading.voltage; });
     object->addProperty("remainingTime", [this] { return m_reading.remainingTime(); });
     object->addProperty("statusString", [this] { return m_reading.status(); });
     object->addProperty("lastChargedPercent", [this] { return int32_t(m_lastChargedPercent); });
     object->addProperty("lastChargedSecs", [this] { return int64_t(m_lastChargedSecs); });
     object->addProperty("lastChargedTime", [this] { return lastChargedTime(); });
-    object->addProperty("udi", [this] { return m_path; });
+    object->addProperty("batteries", [this] {
+        std::vector<dbus::ObjectPath> paths;
+        for (const std::string &path : m_batteries)
+            paths.push_back({path});
+        return paths;
+    });
     object->addSignal("chargeStateChanged", "i", {"value"});
     object->addSignal("chargePercentChanged", "i", {"value"});
-    object->addSignal("capacityChanged", "i", {"value"});
-    object->addSignal("voltageChanged", "d", {"value"});
     object->addSignal("remainingTimeChanged", "x", {"value"});
     object->addSignal("lastChargedPercentChanged", "");
     object->addSignal("lastChargedSecsChanged", "");
+    object->addSignal("batteriesChanged", "");
     if (!object->publish())
         return false;
 
@@ -207,6 +206,33 @@ bool Battery::publish(dbus::Connection *session)
     m_lastChargedPercent = int(m_settings.intValue(s_lastChargedPercentKey, 0));
     m_lastChargedSecs = uint64_t(m_settings.intValue(s_lastChargedSecsKey, 0));
     return true;
+}
+
+void Battery::setBatteries(std::vector<std::string> paths)
+{
+    if (paths == m_batteries)
+        return;
+
+    m_batteries = std::move(paths);
+    m_batteryMatches.clear();
+    m_batteryThresholds.clear();
+    for (const std::string &path : m_batteries) {
+        const dbus::Proxy device(m_system, upower::service, path, upower::deviceInterface);
+        m_batteryThresholds[path] = device.property<bool>("ChargeThresholdEnabled").value_or(false);
+        // The display device announces the batteries' other changes itself.
+        m_batteryMatches.push_back(device.onPropertiesChanged(
+                [this, path](const dbus::VariantMap &changed, const std::vector<std::string> &) {
+                    const auto it = changed.find("ChargeThresholdEnabled");
+                    if (it == changed.end())
+                        return;
+                    m_batteryThresholds[path] = it->second.get<bool>().value_or(false);
+                    update();
+                }));
+    }
+
+    if (m_object)
+        m_object->emitSignal("batteriesChanged");
+    update();
 }
 
 void Battery::update()
@@ -218,8 +244,6 @@ void Battery::update()
     const Reading &now = m_reading;
     if (before.percent != now.percent)
         m_object->emitSignal("chargePercentChanged", int32_t(now.percent));
-    if (before.capacity != now.capacity)
-        m_object->emitSignal("capacityChanged", int32_t(now.capacity));
     if (before.chargeState() != now.chargeState())
         m_object->emitSignal("chargeStateChanged", int32_t(now.chargeState()));
 
@@ -236,9 +260,6 @@ void Battery::update()
         m_object->emitSignal("lastChargedPercentChanged");
         m_object->emitSignal("lastChargedSecsChanged");
     }
-
-    if (before.voltage != now.voltage)
-        m_object->emitSignal("voltageChanged", now.voltage);
 
     // Also tells statusString readers, which a state change alone can alter.
     if (before.timeToFull != now.timeToFull || before.timeToEmpty != now.timeToEmpty

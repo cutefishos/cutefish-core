@@ -82,39 +82,40 @@ void PowerSupply::addBattery(const std::string &path)
     if (m_batteries.contains(path))
         return;
 
-    auto battery = std::make_unique<Battery>(m_system, path, m_settings);
-    if (!battery->powersComputer())
+    // A battery of the computer, not of a mouse, a phone or a UPS; the same
+    // test UPower's display device sums the batteries up by.
+    const dbus::Proxy device(m_system, upower::service, path, upower::deviceInterface);
+    const dbus::VariantMap values = device.getAll().value<dbus::VariantMap>().value_or(dbus::VariantMap());
+    const auto type = values.find("Type");
+    if (type == values.end() || type->second.get<uint32_t>().value_or(0) != upower::batteryType
+        || !flag(values, "PowerSupply", false))
         return;
 
-    m_batteries.emplace(path, std::move(battery));
-    publishBattery();
+    m_batteries.insert(path);
+    publishBatteries();
 }
 
 void PowerSupply::removeBattery(const std::string &path)
 {
-    const auto it = m_batteries.find(path);
-    if (it == m_batteries.end())
-        return;
-
-    // Destroying it frees the D-Bus path for the next battery, even one added in
-    // the same batch of signals.
-    const bool held = m_published == it->second.get();
-    m_batteries.erase(it);
-    if (held) {
-        m_published = nullptr;
-        publishBattery();
-    }
+    if (m_batteries.erase(path))
+        publishBatteries();
 }
 
-void PowerSupply::publishBattery()
+void PowerSupply::publishBatteries()
 {
-    if (m_published || !m_session)
+    if (!m_session)
         return;
 
-    for (auto &[path, battery] : m_batteries) {
-        if (battery->publish(m_session)) {
-            m_published = battery.get();
-            return;
-        }
+    if (m_batteries.empty()) {
+        m_published.reset();
+        return;
     }
+
+    if (!m_published) {
+        auto battery = std::make_unique<Battery>(m_system, m_settings);
+        if (!battery->publish(m_session))
+            return;
+        m_published = std::move(battery);
+    }
+    m_published->setBatteries({m_batteries.begin(), m_batteries.end()});
 }
