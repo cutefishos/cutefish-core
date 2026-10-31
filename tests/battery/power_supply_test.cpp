@@ -3,6 +3,7 @@
 
 #include <gtest/gtest.h>
 
+#include <chrono>
 #include <future>
 #include <map>
 #include <memory>
@@ -57,6 +58,25 @@ public:
             m_devices.erase(name);
             m_upower->emitSignal("DeviceRemoved", dbus::ObjectPath{devices + name});
         });
+    }
+
+    // UPower stopping; its devices stay as they are for the next start.
+    void stop()
+    {
+        inThread([&] { m_bus->releaseName("org.freedesktop.UPower"); });
+    }
+
+    // Leaves a device out of the next start, without a signal.
+    void forget(const std::string &name)
+    {
+        inThread([&] { m_devices.erase(name); });
+    }
+
+    bool start()
+    {
+        bool owned = false;
+        inThread([&] { owned = m_bus->requestName("org.freedesktop.UPower"); });
+        return owned;
     }
 
     void enableThreshold(const std::string &name)
@@ -220,8 +240,10 @@ TEST_F(PowerSupplyTest, PublishesTheBatteriesTogether)
     // UPower is on the system bus, which the session bus stands in for.
     PowerSupply supply(dbus::Connection::session(), dbus::Connection::session(), settings);
 
-    EXPECT_EQ(batteries(), (std::vector<std::string>{std::string(devices) + "battery_BAT0",
-                                                     std::string(devices) + "battery_BAT1"}));
+    EXPECT_TRUE(testsupport::waitFor(loop, [&] {
+        return batteries() == std::vector<std::string>{std::string(devices) + "battery_BAT0",
+                                                       std::string(devices) + "battery_BAT1"};
+    }));
     EXPECT_EQ(chargePercent(), 57);
 
     upower.changeDisplay(2, 55.6);
@@ -231,6 +253,7 @@ TEST_F(PowerSupplyTest, PublishesTheBatteriesTogether)
 TEST_F(PowerSupplyTest, AnyBatteryHoldingTheLimitPausesCharging)
 {
     PowerSupply supply(dbus::Connection::session(), dbus::Connection::session(), settings);
+    ASSERT_TRUE(testsupport::waitFor(loop, [&] { return batteries().size() == 2u; }));
 
     // UPower's pending-charge.
     upower.changeDisplay(5, 79.6);
@@ -243,7 +266,7 @@ TEST_F(PowerSupplyTest, AnyBatteryHoldingTheLimitPausesCharging)
 TEST_F(PowerSupplyTest, FollowsBatteriesComingAndGoing)
 {
     PowerSupply supply(dbus::Connection::session(), dbus::Connection::session(), settings);
-    ASSERT_EQ(batteries().size(), 2u);
+    ASSERT_TRUE(testsupport::waitFor(loop, [&] { return batteries().size() == 2u; }));
 
     upower.remove("battery_BAT1");
     EXPECT_TRUE(testsupport::waitFor(loop, [&] {
@@ -261,4 +284,26 @@ TEST_F(PowerSupplyTest, FollowsBatteriesComingAndGoing)
     upower.remove("battery_BAT0");
     upower.remove("battery_BAT2");
     EXPECT_TRUE(testsupport::waitFor(loop, [&] { return published().empty(); }));
+}
+
+TEST_F(PowerSupplyTest, FollowsUPowerRestarting)
+{
+    upower.stop();
+    PowerSupply supply(dbus::Connection::session(), dbus::Connection::session(), settings);
+    testsupport::wait(loop, std::chrono::milliseconds(200));
+    EXPECT_TRUE(published().empty());
+
+    ASSERT_TRUE(upower.start());
+    EXPECT_TRUE(testsupport::waitFor(loop, [&] { return batteries().size() == 2u; }));
+    EXPECT_TRUE(supply.onBattery());
+
+    upower.stop();
+    EXPECT_TRUE(testsupport::waitFor(loop, [&] { return published().empty(); }));
+
+    upower.forget("battery_BAT1");
+    ASSERT_TRUE(upower.start());
+    EXPECT_TRUE(testsupport::waitFor(loop, [&] {
+        return batteries() == std::vector<std::string>{std::string(devices) + "battery_BAT0"};
+    }));
+    EXPECT_EQ(chargePercent(), 57);
 }

@@ -34,6 +34,9 @@ PowerManager::PowerManager(PowerSupply *powerSupply, BrightnessManager *brightne
         m_subscriptions.push_back(m_powerSupply->powerSourceChanged.connect([this] {
             onPowerSourceChanged();
         }));
+        m_subscriptions.push_back(m_powerSupply->lidPresenceChanged.connect([this] {
+            m_displayPolicy->setLidPresent(m_powerSupply->hasLid());
+        }));
         m_subscriptions.push_back(m_powerSupply->lidChanged.connect([this] {
             onLidChanged();
         }));

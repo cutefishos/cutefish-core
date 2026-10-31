@@ -41,14 +41,37 @@ PowerSupply::PowerSupply(dbus::Connection *system, dbus::Connection *session, Se
                 readFlags(changed);
             }));
 
-    // The first call activates UPower if it is not running yet.
+    // UPower may start after this, or stop and come back; each new owner is read afresh.
+    m_upowerWatch = system->watchName(upower::service, [this](const std::string &owner) {
+        if (owner == m_upowerOwner)
+            return;
+        m_upowerOwner = owner;
+
+        if (owner.empty()) {
+            m_batteries.clear();
+            publishBatteries();
+            return;
+        }
+        load();
+    });
+
+    // Activates UPower if it is not running yet; the watch reads it once it is.
+    m_activation = m_upower.getAllAsync([](const dbus::Reply &reply) {
+        if (reply.isError())
+            CF_WARNING(services::log()) << "Cannot start UPower:" << reply.error().name;
+    });
+}
+
+PowerSupply::~PowerSupply() = default;
+
+void PowerSupply::load()
+{
     const dbus::Reply properties = m_upower.getAll();
-    if (properties.isError())
+    if (properties.isError()) {
+        CF_WARNING(services::log()) << "Cannot read UPower:" << properties.error().name;
         return;
-    const dbus::VariantMap values = properties.value<dbus::VariantMap>().value_or(dbus::VariantMap());
-    m_onBattery = flag(values, "OnBattery", false);
-    m_hasLid = flag(values, "LidIsPresent", false);
-    m_lidClosed = flag(values, "LidIsClosed", false);
+    }
+    readFlags(properties.value<dbus::VariantMap>().value_or(dbus::VariantMap()));
 
     const dbus::Reply devices = m_upower.call("EnumerateDevices");
     const auto paths = devices.value<std::vector<dbus::ObjectPath>>();
@@ -56,20 +79,32 @@ PowerSupply::PowerSupply(dbus::Connection *system, dbus::Connection *session, Se
         CF_WARNING(services::log()) << "Cannot list UPower devices:" << devices.error().name;
         return;
     }
-    for (const dbus::ObjectPath &path : *paths)
-        addBattery(path.path);
-}
 
-PowerSupply::~PowerSupply() = default;
+    std::set<std::string> batteries;
+    for (const dbus::ObjectPath &path : *paths) {
+        if (isBattery(path.path))
+            batteries.insert(path.path);
+    }
+    if (batteries == m_batteries)
+        return;
+
+    m_batteries = std::move(batteries);
+    publishBatteries();
+}
 
 void PowerSupply::readFlags(const dbus::VariantMap &values)
 {
     const bool onBattery = flag(values, "OnBattery", m_onBattery);
+    const bool hasLid = flag(values, "LidIsPresent", m_hasLid);
     const bool lidClosed = flag(values, "LidIsClosed", m_lidClosed);
 
     if (onBattery != m_onBattery) {
         m_onBattery = onBattery;
         powerSourceChanged.emit();
+    }
+    if (hasLid != m_hasLid) {
+        m_hasLid = hasLid;
+        lidPresenceChanged.emit();
     }
     if (lidClosed != m_lidClosed) {
         m_lidClosed = lidClosed;
@@ -77,18 +112,20 @@ void PowerSupply::readFlags(const dbus::VariantMap &values)
     }
 }
 
-void PowerSupply::addBattery(const std::string &path)
+bool PowerSupply::isBattery(const std::string &path) const
 {
-    if (m_batteries.contains(path))
-        return;
-
     // A battery of the computer, not of a mouse, a phone or a UPS; the same
     // test UPower's display device sums the batteries up by.
     const dbus::Proxy device(m_system, upower::service, path, upower::deviceInterface);
     const dbus::VariantMap values = device.getAll().value<dbus::VariantMap>().value_or(dbus::VariantMap());
     const auto type = values.find("Type");
-    if (type == values.end() || type->second.get<uint32_t>().value_or(0) != upower::batteryType
-        || !flag(values, "PowerSupply", false))
+    return type != values.end() && type->second.get<uint32_t>().value_or(0) == upower::batteryType
+            && flag(values, "PowerSupply", false);
+}
+
+void PowerSupply::addBattery(const std::string &path)
+{
+    if (m_batteries.contains(path) || !isBattery(path))
         return;
 
     m_batteries.insert(path);

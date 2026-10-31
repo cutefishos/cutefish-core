@@ -32,10 +32,13 @@ public:
     bool lidClosed() const { return m_lidClosed; }
 
     cutefish::base::Signal<> powerSourceChanged;
+    cutefish::base::Signal<> lidPresenceChanged;
     cutefish::base::Signal<> lidChanged;
 
 private:
+    void load();
     void readFlags(const cutefish::base::dbus::VariantMap &values);
+    bool isBattery(const std::string &path) const;
     void addBattery(const std::string &path);
     void removeBattery(const std::string &path);
     void publishBatteries();
@@ -44,6 +47,9 @@ private:
     cutefish::base::dbus::Connection *m_session;
     cutefish::base::Settings &m_settings;
     cutefish::base::dbus::Proxy m_upower;
+    cutefish::base::dbus::PendingCall m_activation;
+    cutefish::base::dbus::NameWatch m_upowerWatch;
+    std::string m_upowerOwner;
     std::vector<cutefish::base::dbus::Match> m_matches;
     // The UPower device paths of the batteries that power the computer.
     std::set<std::string> m_batteries;
