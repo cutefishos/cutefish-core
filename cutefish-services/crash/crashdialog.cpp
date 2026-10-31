@@ -75,9 +75,7 @@ public:
 protected:
     void layout() override
     {
-        // The text sits 8 in from the frame's edges.
-        const RectF bounds = localRect();
-        m_content->setGeometry({8, 8, std::max(0.0, bounds.width - 16), std::max(0.0, bounds.height - 16)});
+        m_content->setGeometry(localRect());
     }
 
     void paint(Painter &painter) override
@@ -190,11 +188,12 @@ void CrashDialog::buildContent()
 
     auto scroll = std::make_unique<ScrollView>();
     scroll->setScrollDirections(true, true);
+    scroll->setCornerRadius(Theme::current().smallRadius);
     m_report = scroll->setContent<TextArea>();
     m_report->setReadOnly(true);
     m_report->setWrapMode(TextArea::WrapMode::NoWrap);
     m_report->setFrameVisible(false);
-    m_report->setPadding({});
+    m_report->setPadding(Margins::all(8));
     m_report->setFont(m_fixedFont, 11, 400);
     m_report->setLayoutHints({.fillWidth = true});
     m_reportFrame = content->addChild<ReportFrame>(std::move(scroll));

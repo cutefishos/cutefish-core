@@ -240,14 +240,14 @@ public:
 protected:
     void layout() override
     {
-        const double width = geometry().width;
+        const double width = std::max(0.0, geometry().width - 2 * kMargin);
         double y = 0;
         for (const Entry &entry : entries) {
             if (entry.section) {
-                entry.section->setGeometry({0, y, width, kSectionHeight});
+                entry.section->setGeometry({kMargin, y, width, kSectionHeight});
                 y += kSectionHeight;
             }
-            entry.row->setGeometry({0, y, width, kRowHeight});
+            entry.row->setGeometry({kMargin, y, width, kRowHeight});
             y += kRowHeight + kSpacing;
         }
     }
@@ -353,7 +353,11 @@ public:
     double heightForWidth(double) const override { return height(); }
 
 protected:
-    void layout() override { m_scroll->setGeometry(localRect()); }
+    void layout() override
+    {
+        // The scroll area spans the window, past the prompt's padding.
+        m_scroll->setGeometry({-kMargin, 0, geometry().width + 2 * kMargin, geometry().height});
+    }
 
 private:
     struct Choice {
