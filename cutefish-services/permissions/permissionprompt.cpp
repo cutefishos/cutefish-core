@@ -4,6 +4,7 @@
 #include <cmath>
 #include <format>
 
+#include "base/application_bundle.h"
 #include "base/application_registry.h"
 #include "base/desktop_entry.h"
 #include "base/file.h"
@@ -525,6 +526,14 @@ PermissionPrompt::Application PermissionPrompt::describeApplication(const std::s
     Application result {appId, appId, {}};
     if (appId.empty())
         return result;
+    // A bundle's id is its path.
+    if (!base::bundle::bundlePath(appId).empty()) {
+        if (const auto entry = base::bundle::read(appId, {})) {
+            result.name = entry->name;
+            result.icon = entry->icon;
+        }
+        return result;
+    }
     for (const std::string &directory : base::ApplicationRegistry::desktopPaths()) {
         const std::string path = directory + '/' + appId + ".desktop";
         const auto contents = base::file::read(path);

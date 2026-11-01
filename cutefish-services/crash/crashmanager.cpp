@@ -7,6 +7,7 @@
 
 #include <filesystem>
 
+#include "base/application_bundle.h"
 #include "base/application_registry.h"
 #include "base/desktop_entry.h"
 #include "base/event_loop.h"
@@ -36,6 +37,10 @@ static bool isSessionProgram(const std::string &program)
 
 static std::optional<DesktopEntry> lookupEntry(const std::string &id)
 {
+    // A bundle's id is its path.
+    if (!bundle::bundlePath(id).empty())
+        return bundle::read(id, {});
+
     for (const std::string &directory : ApplicationRegistry::desktopPaths()) {
         const std::string path = directory + '/' + id + ".desktop";
         if (const auto contents = file::read(path))
