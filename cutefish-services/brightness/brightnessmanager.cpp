@@ -22,6 +22,15 @@ namespace fs = std::filesystem;
 static const std::string BacklightDir = "/sys/class/backlight/";
 static const std::string DrmDir = "/sys/class/drm/";
 
+static constexpr std::chrono::milliseconds kFadeFrameInterval = 16ms;
+
+// A value asked for while the last one is still fading in, as a dragged slider's
+// or a held key's, follows this quickly so the panel keeps up.
+static constexpr std::chrono::milliseconds kFollowFade = 64ms;
+
+// Fades move evenly in perceived brightness rather than in backlight power.
+static constexpr double kPerceptualGamma = 2.2;
+
 // Writers that replace the file drop the watch; IN_IGNORED says so.
 static constexpr uint32_t kWatchMask = IN_MODIFY | IN_CLOSE_WRITE | IN_ATTRIB | IN_MOVE_SELF | IN_DELETE_SELF;
 
@@ -96,6 +105,20 @@ static int typeRank(const std::string &type)
     return 2;
 }
 
+static double easeOut(double progress)
+{
+    const double remaining = 1.0 - progress;
+    return 1.0 - remaining * remaining * remaining;
+}
+
+static int fadeValue(int from, int to, int maximum, double progress)
+{
+    const double start = std::pow(double(from) / maximum, 1.0 / kPerceptualGamma);
+    const double end = std::pow(double(to) / maximum, 1.0 / kPerceptualGamma);
+    const double level = start + (end - start) * easeOut(progress);
+    return int(std::lround(std::pow(level, kPerceptualGamma) * maximum));
+}
+
 static bool contains(const std::vector<std::string> &list, const std::string &value)
 {
     return std::find(list.begin(), list.end(), value) != list.end();
@@ -120,6 +143,10 @@ BrightnessManager::BrightnessManager(dbus::Connection *session, dbus::Connection
     m_rescanTimer.setInterval(1500ms);
     m_rescanTimer.onTimeout = [this] {
         rescan();
+    };
+    m_fadeTimer.setInterval(kFadeFrameInterval);
+    m_fadeTimer.onTimeout = [this] {
+        stepFades();
     };
     if (m_session) {
         dbus::MatchRule rule;
@@ -181,10 +208,10 @@ bool BrightnessManager::brightnessEnabled()
     return !m_displays.empty();
 }
 
-void BrightnessManager::setValue(int value)
+void BrightnessManager::setValue(int value, std::chrono::milliseconds fade)
 {
     if (!m_displays.empty())
-        setDisplayBrightness(m_displays.front().connector, value);
+        setDisplayBrightness(m_displays.front().connector, value, fade);
 }
 
 std::vector<std::string> BrightnessManager::displays() const
@@ -201,7 +228,8 @@ int BrightnessManager::displayBrightness(const std::string &display) const
     return entry ? percent(*entry) : -1;
 }
 
-void BrightnessManager::setDisplayBrightness(const std::string &connector, int value)
+void BrightnessManager::setDisplayBrightness(const std::string &connector, int value,
+                                             std::chrono::milliseconds fade)
 {
     Display *display = find(connector);
     if (!display)
@@ -217,25 +245,91 @@ void BrightnessManager::setDisplayBrightness(const std::string &connector, int v
     const int oldPercent = percent(*display);
     display->raw = raw;
 
-    if (display->kind == Kind::Backlight) {
-        if (m_system) {
-            const dbus::Proxy session(m_system, "org.freedesktop.login1",
-                                      "/org/freedesktop/login1/session/auto",
-                                      "org.freedesktop.login1.Session");
-            services::callDetached(
-                    session, "SetBrightness",
-                    [](const dbus::Reply &reply) {
-                        if (reply.isError())
-                            CF_WARNING(services::log())
-                                    << "Setting backlight brightness failed:" << reply.error().message;
-                    },
-                    std::string("backlight"), display->device, uint32_t(raw));
-        }
-    } else {
+    // DDC/CI writes are too slow to drive frame by frame.
+    if (display->kind == Kind::Backlight)
+        startFade(*display, fade);
+    else
         m_ddcWorker.requestValue(display->device, raw);
-    }
 
     notifyIfChanged(*display, oldPercent);
+}
+
+void BrightnessManager::startFade(Display &display, std::chrono::milliseconds duration)
+{
+    if (duration <= 0ms || display.written <= 0 || display.maximum <= 0) {
+        display.fading = false;
+        writeBacklight(display, display.raw);
+        return;
+    }
+
+    if (display.fading)
+        duration = std::min(duration, kFollowFade);
+    display.fading = true;
+    display.fadeFrom = display.written;
+    display.fadeStart = std::chrono::steady_clock::now();
+    display.fadeDuration = duration;
+    if (!m_fadeTimer.isActive())
+        m_fadeTimer.start();
+}
+
+void BrightnessManager::stepFades()
+{
+    const auto now = std::chrono::steady_clock::now();
+    bool fading = false;
+    for (Display &display : m_displays) {
+        if (!display.fading)
+            continue;
+
+        const double progress = std::chrono::duration<double>(now - display.fadeStart)
+                / std::chrono::duration<double>(display.fadeDuration);
+        if (progress >= 1.0) {
+            display.fading = false;
+            writeBacklight(display, display.raw);
+            continue;
+        }
+
+        fading = true;
+        writeBacklight(display, std::max(1, fadeValue(display.fadeFrom, display.raw, display.maximum, progress)));
+    }
+    if (!fading)
+        m_fadeTimer.stop();
+}
+
+void BrightnessManager::writeBacklight(Display &display, int raw)
+{
+    if (raw == display.written || !m_system)
+        return;
+
+    display.written = raw;
+    ++display.pendingWrites;
+
+    const dbus::Proxy session(m_system, "org.freedesktop.login1",
+                              "/org/freedesktop/login1/session/auto",
+                              "org.freedesktop.login1.Session");
+    services::callDetached(
+            session, "SetBrightness",
+            [lifetime = std::weak_ptr<char>(m_lifetime), this, device = display.device](const dbus::Reply &reply) {
+                if (reply.isError())
+                    CF_WARNING(services::log())
+                            << "Setting backlight brightness failed:" << reply.error().message;
+                if (!lifetime.expired())
+                    handleBacklightWritten(device);
+            },
+            std::string("backlight"), display.device, uint32_t(raw));
+}
+
+void BrightnessManager::handleBacklightWritten(const std::string &device)
+{
+    for (Display &display : m_displays) {
+        if (display.kind != Kind::Backlight || display.device != device)
+            continue;
+
+        display.pendingWrites = std::max(0, display.pendingWrites - 1);
+        // Our own writes were not read back; catch anything else that wrote meanwhile.
+        if (display.pendingWrites == 0 && !display.fading)
+            handleFileChanged(brightnessFile(device));
+        return;
+    }
 }
 
 void BrightnessManager::rescan()
@@ -377,6 +471,24 @@ void BrightnessManager::publish(std::vector<Display> displays)
     const std::vector<Display> old = m_displays;
     m_displays = std::move(displays);
 
+    // A rescan reads a backlight mid-fade; keep fading to the value asked for.
+    for (Display &display : m_displays) {
+        if (display.kind != Kind::Backlight)
+            continue;
+        const auto it = std::find_if(old.cbegin(), old.cend(), [&](const Display &entry) {
+            return entry.kind == Kind::Backlight && entry.device == display.device;
+        });
+        if (it != old.cend() && (it->fading || it->pendingWrites > 0)) {
+            display.raw = it->raw;
+            display.written = it->written;
+            display.pendingWrites = it->pendingWrites;
+            display.fading = it->fading;
+            display.fadeFrom = it->fadeFrom;
+            display.fadeStart = it->fadeStart;
+            display.fadeDuration = it->fadeDuration;
+        }
+    }
+
     watchFiles();
 
     if (this->displays() != oldConnectors && m_object)
@@ -451,6 +563,7 @@ void BrightnessManager::readInotify()
 void BrightnessManager::readBacklight(Display &display) const
 {
     display.raw = toInt(readSysfs(brightnessFile(display.device)));
+    display.written = display.raw;
 }
 
 BrightnessManager::Display *BrightnessManager::find(const std::string &display)
@@ -500,6 +613,9 @@ void BrightnessManager::handleFileChanged(const std::string &path)
     for (Display &display : m_displays) {
         if (display.kind != Kind::Backlight || brightnessFile(display.device) != path)
             continue;
+        // The file is only partway through our own fade.
+        if (display.fading || display.pendingWrites > 0)
+            return;
 
         const int oldPercent = percent(display);
         readBacklight(display);

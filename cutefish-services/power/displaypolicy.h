@@ -4,6 +4,7 @@
 #ifndef DISPLAYPOLICY_H
 #define DISPLAYPOLICY_H
 
+#include <chrono>
 #include <cstdint>
 #include <set>
 #include <string>
@@ -71,7 +72,7 @@ private:
     void requestDockedLid(bool closed);
     void finishDockedLid(bool closed, bool succeeded, cutefish::display::ErrorCode error);
     int screenBrightness() const;
-    void setScreenBrightness(int value);
+    void setScreenBrightness(int value, std::chrono::milliseconds fade);
 
     WaylandIdle *m_idle;
     BrightnessManager *m_brightness;

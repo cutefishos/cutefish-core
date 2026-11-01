@@ -34,6 +34,9 @@ static int secondFadeAt(int timeout)
     return timeout * 3 / 4;
 }
 
+// An idle panel dims slowly enough not to draw the eye.
+static constexpr std::chrono::milliseconds s_idleFade = 1000ms;
+
 // A locked screen nobody is using goes dark this soon, whatever the user chose.
 static constexpr int s_lockedDisplayOffTimeout = 30;
 
@@ -156,10 +159,10 @@ int DisplayPolicy::screenBrightness() const
     return m_brightness ? m_brightness->brightness() : -1;
 }
 
-void DisplayPolicy::setScreenBrightness(int value)
+void DisplayPolicy::setScreenBrightness(int value, std::chrono::milliseconds fade)
 {
     if (m_brightness)
-        m_brightness->setValue(value);
+        m_brightness->setValue(value, fade);
 }
 
 void DisplayPolicy::userReturned()
@@ -223,7 +226,7 @@ void DisplayPolicy::fade(int divisor)
         m_savedBrightness = screenBrightness();
 
     if (m_savedBrightness > 0)
-        setScreenBrightness(int(std::lround(double(m_savedBrightness) / divisor)));
+        setScreenBrightness(int(std::lround(double(m_savedBrightness) / divisor)), s_idleFade);
 
     m_dimmed = true;
 }
@@ -392,7 +395,7 @@ void DisplayPolicy::turnDisplayOff()
         if (m_savedBrightness < 0)
             m_savedBrightness = screenBrightness();
         if (m_savedBrightness > 0)
-            setScreenBrightness(0);
+            setScreenBrightness(0, s_idleFade);
     }
 
     m_displayOff = true;
@@ -404,7 +407,7 @@ void DisplayPolicy::restoreDisplay()
         setDisplayPower(true);
 
     if (m_savedBrightness > 0)
-        setScreenBrightness(m_savedBrightness);
+        setScreenBrightness(m_savedBrightness, BrightnessManager::DefaultFade);
 
     m_savedBrightness = -1;
     m_displayOff = false;
