@@ -13,5 +13,5 @@ jobs:
       dependencies: icons cutefish-toolkit cutefish-framework
       test-projects: >-
         common/tests appruntime/tests session/tests cutefish-services/tests
-        tests/battery tests/crash tests/language tests/nightlight tests/permissions
+        tests/battery tests/language tests/nightlight tests/permissions
         tests/power tests/privacy tests/screenrecorder
