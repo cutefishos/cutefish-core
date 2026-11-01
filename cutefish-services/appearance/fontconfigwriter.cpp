@@ -68,6 +68,7 @@ void writeFontConfig(const FontConfig &config)
 {
     const std::set<std::string> families = fontFamilies();
     const std::string familyFont = families.contains(config.family) ? config.family
+            : families.contains("Inter")                           ? std::string("Inter")
             : families.contains("Noto Sans")                       ? std::string("Noto Sans")
                                                                    : std::string("DejaVu Sans");
     const std::string fixedFont = families.contains(config.fixedFamily) ? config.fixedFamily
@@ -82,32 +83,6 @@ void writeFontConfig(const FontConfig &config)
 
     // Atomic replace: a fontconfig reader starting meanwhile must never parse a partial file.
     file::writeAtomically(paths::configHome() + "/fontconfig/conf.d/99-cutefish.conf", content);
-}
-
-std::string fontForLocale(const std::string &code)
-{
-    char likely[ULOC_FULLNAME_CAPACITY] = {};
-    UErrorCode status = U_ZERO_ERROR;
-    uloc_addLikelySubtags(code.c_str(), likely, sizeof(likely), &status);
-    char language[ULOC_LANG_CAPACITY] = {};
-    char country[ULOC_COUNTRY_CAPACITY] = {};
-    uloc_getLanguage(likely, language, sizeof(language), &status);
-    uloc_getCountry(likely, country, sizeof(country), &status);
-    if (U_FAILURE(status))
-        return {};
-    const std::string localeName = std::string(language) + '_' + country;
-
-    if (localeName == "zh_CN")
-        return "Noto Sans CJK SC";
-    if (startsWith(localeName, "en_"))
-        return "Noto Sans";
-    if (localeName == "zh_TW")
-        return "Noto Sans CJK TC";
-    if (localeName == "zh_HK")
-        return "Noto Sans CJK HK";
-    if (localeName == "ja_JP")
-        return "Noto Sans CJK JP";
-    return {};
 }
 
 std::string cjkFontForLanguages(const std::vector<std::string> &languages)

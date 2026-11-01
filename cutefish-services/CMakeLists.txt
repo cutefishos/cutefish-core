@@ -96,5 +96,6 @@ target_link_libraries(${TARGET} PRIVATE
 install(TARGETS ${TARGET} DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(FILES appearance/gtk/gtk-3.0.css appearance/gtk/gtk-4.0.css
         DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${TARGET}/gtk)
+install(FILES appearance/56-cutefish-sans.conf DESTINATION ${CMAKE_INSTALL_FULL_SYSCONFDIR}/fonts/conf.d)
 install(FILES brightness/60-cutefish-ddc.rules DESTINATION lib/udev/rules.d)
 install(FILES brightness/cutefish-ddc.conf DESTINATION lib/modules-load.d)

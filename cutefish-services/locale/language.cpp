@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 #include "language.h"
-#include "appearance/fontconfigwriter.h"
 
 #include <algorithm>
 #include <map>
@@ -132,12 +131,6 @@ void Language::setPreferredLanguages(const std::vector<std::string> &languages)
     const std::string code = codes.front();
     const bool primaryChanged = code != languageCode();
     m_settings.setValue("Language/preferredLanguages", codes);
-
-    if (primaryChanged) {
-        const std::string font = fontForLocale(localeName(code));
-        if (!font.empty() && m_appearance.setSystemFont)
-            m_appearance.setSystemFont(font);
-    }
 
     m_settings.setValue("Language/language", code);
     m_settings.sync();

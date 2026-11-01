@@ -58,30 +58,23 @@ TEST(LanguageServiceTest, NotificationsOnlyForPrimaryChanges)
 
     Settings settings(directory.path() + "/services.conf");
     settings.setValue("Language/language", "en_US");
-    settings.setValue("Appearance/Font", "Custom Font");
     settings.sync();
 
-    std::vector<std::string> fonts;
     int fontConfigs = 0;
-    Language language(settings, dbus::Connection::session(),
-                      {[&fonts](const std::string &family) { fonts.push_back(family); },
-                       [&fontConfigs] { ++fontConfigs; }});
+    Language language(settings, dbus::Connection::session(), {[&fontConfigs] { ++fontConfigs; }});
 
     language.setPreferredLanguages({"en_US", "ja_JP", "de_DE"});
     testsupport::wait(loop, 30ms);
     EXPECT_EQ(notifications.count, 0);
-    EXPECT_TRUE(fonts.empty());
     EXPECT_EQ(fontConfigs, 1);
 
     language.setPreferredLanguages({"en_US", "de_DE", "ja_JP"});
     testsupport::wait(loop, 30ms);
     EXPECT_EQ(notifications.count, 0);
-    EXPECT_TRUE(fonts.empty());
     EXPECT_EQ(language.preferredLanguages(), (std::vector<std::string> {"en_US", "de_DE", "ja_JP"}));
 
     language.setPreferredLanguages({"ja_JP", "en_US", "de_DE"});
     EXPECT_TRUE(testsupport::waitFor(loop, [&] { return notifications.count == 1; }));
-    EXPECT_EQ(fonts, std::vector<std::string> {"Noto Sans CJK JP"});
     EXPECT_EQ(language.languageCode(), "ja_JP");
 
     language.setPreferredLanguages({"ja_JP", "de_DE"});
@@ -90,8 +83,6 @@ TEST(LanguageServiceTest, NotificationsOnlyForPrimaryChanges)
 
     language.setPreferredLanguages({"de_DE"});
     EXPECT_TRUE(testsupport::waitFor(loop, [&] { return notifications.count == 2; }));
-    // German has no font of its own.
-    EXPECT_EQ(fonts.size(), 1u);
 
     language.setPreferredLanguages({"de_DE"});
     testsupport::wait(loop, 30ms);
@@ -141,15 +132,4 @@ TEST(LanguageServiceTest, NamesLocalesAsTheSessionDoes)
     EXPECT_EQ(Language::localeName("zh_TW"), "zh_TW");
     EXPECT_EQ(Language::localeName("en"), "en_US");
     EXPECT_EQ(Language::localeName("de"), "de_DE");
-}
-
-TEST(LanguageServiceTest, LanguageCodesWithAScriptPickTheirFont)
-{
-    EXPECT_EQ(fontForLocale("zh_Hans_CN"), "Noto Sans CJK SC");
-    EXPECT_EQ(fontForLocale("zh_Hant_TW"), "Noto Sans CJK TC");
-    EXPECT_EQ(fontForLocale("zh_Hant_HK"), "Noto Sans CJK HK");
-    EXPECT_EQ(fontForLocale("zh_CN"), "Noto Sans CJK SC");
-    EXPECT_EQ(fontForLocale("ja_JP"), "Noto Sans CJK JP");
-    EXPECT_EQ(fontForLocale("en_US"), "Noto Sans");
-    EXPECT_EQ(fontForLocale("de_DE"), "");
 }

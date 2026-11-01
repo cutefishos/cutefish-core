@@ -17,10 +17,9 @@
 class Language
 {
 public:
-    // What a language change does to the appearance: a primary language with
-    // a font of its own sets it, and the fallback families follow the order.
+    // What a language change does to the appearance: the fallback families
+    // follow the order.
     struct Appearance {
-        std::function<void(const std::string &family)> setSystemFont;
         std::function<void()> updateFontConfig;
     };
 

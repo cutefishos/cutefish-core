@@ -18,10 +18,6 @@ struct FontConfig
 // Writes ~/.config/fontconfig/conf.d/99-cutefish.conf, falling back to installed families.
 void writeFontConfig(const FontConfig &config);
 
-// The UI font a language, such as zh_Hans_CN or zh_CN, starts with; empty
-// when it has none of its own.
-std::string fontForLocale(const std::string &code);
-
 // The first Chinese, Japanese or Korean language decides the forms of Han text
 // that carries no language of its own.
 std::string cjkFontForLanguages(const std::vector<std::string> &languages);

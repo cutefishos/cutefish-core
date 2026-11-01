@@ -44,8 +44,7 @@ Application::Application()
     m_batteryWarning = std::make_unique<BatteryWarning>(m_system, m_session);
     m_language = std::make_unique<Language>(
             m_settings, m_session,
-            Language::Appearance {[this](const std::string &family) { m_themeManager->setSystemFont(family); },
-                                  [this] { m_themeManager->updateFontConfig(); }});
+            Language::Appearance {[this] { m_themeManager->updateFontConfig(); }});
     // The crash dialogs and permission prompts in this process follow too.
     m_language->applyEnvironment = [](const std::map<std::string, std::string> &variables) {
         ui::Application::instance()->setLanguageEnvironment(variables);

@@ -55,10 +55,8 @@ ThemeManager::ThemeManager(Settings &settings, dbus::Connection *session, dbus::
     if (!m_settings.contains(s_systemFixedFontName))
         m_settings.setValue(s_systemFixedFontName, "Noto Mono");
 
-    if (!m_settings.contains(s_systemFontName)) {
-        const std::string fontName = fontForLocale(cutefish::core::language::preferredLanguages().front());
-        m_settings.setValue(s_systemFontName, fontName.empty() ? std::string("Noto Sans") : fontName);
-    }
+    if (!m_settings.contains(s_systemFontName))
+        m_settings.setValue(s_systemFontName, "Inter");
     m_settings.sync();
 
     // Ash's DarkLightModeControllerImpl: the same schedule as the night
@@ -259,7 +257,7 @@ void ThemeManager::setCursorSize(int size)
 
 std::string ThemeManager::systemFont()
 {
-    return m_settings.stringValue(s_systemFontName, "Noto Sans");
+    return m_settings.stringValue(s_systemFontName, "Inter");
 }
 
 void ThemeManager::setSystemFont(const std::string &fontFamily)
