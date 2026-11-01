@@ -10,6 +10,9 @@
 struct CoredumpFrame {
     std::string function;
     std::string module;
+    uint64_t address = 0;
+    // From the start of the module; only with a module.
+    uint64_t offset = 0;
 };
 
 struct CoredumpThread {
@@ -41,6 +44,12 @@ struct Coredump {
     std::string signalDescription() const;
     // Plain text for the clipboard.
     std::string report(const std::string &name) const;
+
+    // Names the frames systemd-coredump left without a module, in code the
+    // program loaded other than as ELF, from the journal entry the program
+    // logged before it died: the symbols of its frames as "<address> <name>"
+    // lines and its modules as "<start> <end> <path>" lines, addresses in hex.
+    void addProgramSymbols(const std::string &symbols, const std::string &modules);
 
     static std::vector<CoredumpThread> parseStackTrace(const std::string &message);
     static std::string demangle(const std::string &symbol);

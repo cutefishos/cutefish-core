@@ -7,7 +7,9 @@
 #include <cstring>
 #include <ctime>
 #include <cxxabi.h>
+#include <filesystem>
 #include <format>
+#include <map>
 #include <regex>
 
 #include "base/strings.h"
@@ -98,8 +100,12 @@ std::string Coredump::report(const std::string &name) const
         text += std::format("\nThread {}:\n", thread.id);
         for (size_t i = 0; i < thread.frames.size(); ++i) {
             const CoredumpFrame &frame = thread.frames[i];
-            text += std::format("#{} {} ({})\n", i, frame.function.empty() ? std::string("??") : frame.function,
-                                frame.module);
+            const std::string function = frame.function.empty() ? std::string("??") : frame.function;
+            if (frame.module.empty())
+                text += std::format("#{} 0x{:016x} {}\n", i, frame.address, function);
+            else
+                text += std::format("#{} 0x{:016x} {} ({} + 0x{:x})\n", i, frame.address, function, frame.module,
+                                    frame.offset);
         }
     }
     return text;
@@ -110,7 +116,7 @@ std::vector<CoredumpThread> Coredump::parseStackTrace(const std::string &message
     static const std::regex threadLine("^Stack trace of thread (\\d+):$");
     // #3  0x00007fe7198dbede name (module + 0xdbede); the module part is
     // missing for an address no mapping covers.
-    static const std::regex frameLine("^#\\d+\\s+0x[0-9a-fA-F]+\\s+(\\S+)(?:\\s+\\((.*?)(?: \\+ 0x[0-9a-fA-F]+)?\\))?$");
+    static const std::regex frameLine("^#\\d+\\s+0x([0-9a-fA-F]+)\\s+(\\S+)(?:\\s+\\((.*?)(?: \\+ 0x([0-9a-fA-F]+))?\\))?$");
 
     std::vector<CoredumpThread> threads;
     for (const std::string_view rawLine : splitViews(message, '\n')) {
@@ -124,13 +130,73 @@ std::vector<CoredumpThread> Coredump::parseStackTrace(const std::string &message
             continue;
         if (!std::regex_match(line, match, frameLine))
             continue;
-        const std::string symbol = match[1].str();
-        std::string module = match[2].matched ? match[2].str() : std::string();
-        if (module == "n/a")
-            module.clear();
-        threads.back().frames.push_back({symbol == "n/a" ? std::string() : demangle(symbol), module});
+        CoredumpFrame frame;
+        frame.address = toNumber<uint64_t>(match[1].str(), 16).value_or(0);
+        const std::string symbol = match[2].str();
+        if (symbol != "n/a")
+            frame.function = demangle(symbol);
+        if (match[3].matched && match[3].str() != "n/a") {
+            frame.module = match[3].str();
+            if (match[4].matched)
+                frame.offset = toNumber<uint64_t>(match[4].str(), 16).value_or(0);
+        }
+        threads.back().frames.push_back(std::move(frame));
     }
     return threads;
+}
+
+namespace {
+
+struct ProgramModule {
+    uint64_t start = 0;
+    uint64_t end = 0;
+    std::string name;
+};
+
+} // namespace
+
+void Coredump::addProgramSymbols(const std::string &symbols, const std::string &modules)
+{
+    std::map<uint64_t, std::string> names;
+    for (const std::string_view line : splitViews(symbols, '\n')) {
+        const size_t space = line.find(' ');
+        if (space == std::string_view::npos)
+            continue;
+        if (const auto address = toNumber<uint64_t>(line.substr(0, space), 16))
+            names[*address] = std::string(line.substr(space + 1));
+    }
+
+    std::vector<ProgramModule> ranges;
+    for (const std::string_view line : splitViews(modules, '\n')) {
+        const size_t first = line.find(' ');
+        const size_t second = first == std::string_view::npos ? first : line.find(' ', first + 1);
+        if (second == std::string_view::npos)
+            continue;
+        const auto start = toNumber<uint64_t>(line.substr(0, first), 16);
+        const auto end = toNumber<uint64_t>(line.substr(first + 1, second - first - 1), 16);
+        if (!start || !end || *end <= *start)
+            continue;
+        const std::string path(line.substr(second + 1));
+        ranges.push_back({*start, *end, std::filesystem::path(path).filename().string()});
+    }
+
+    for (CoredumpThread &thread : threads) {
+        for (CoredumpFrame &frame : thread.frames) {
+            if (!frame.module.empty())
+                continue;
+            for (const ProgramModule &range : ranges) {
+                if (frame.address < range.start || frame.address >= range.end)
+                    continue;
+                frame.module = range.name;
+                frame.offset = frame.address - range.start;
+                break;
+            }
+            if (frame.function.empty()) {
+                if (const auto it = names.find(frame.address); it != names.end())
+                    frame.function = demangle(it->second);
+            }
+        }
+    }
 }
 
 std::string Coredump::demangle(const std::string &symbol)

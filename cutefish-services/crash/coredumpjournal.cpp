@@ -19,6 +19,9 @@ using namespace cutefish::base::strings;
 
 // systemd-coredump's "Process … dumped core." message.
 static const char s_coredumpMessageId[] = "MESSAGE_ID=fc2e22bc6ee647b6b90729ab34a250b1";
+// What a program that loads code other than as ELF logs before it dies, so
+// its frames can be named; see Coredump::addProgramSymbols.
+static const char s_programCrashMessageId[] = "MESSAGE_ID=af9beb45ed294df2905ec4ec78887192";
 
 CoredumpJournal::CoredumpJournal(std::function<void(const Coredump &dump)> coredump)
     : m_coredump(std::move(coredump))
@@ -94,16 +97,39 @@ void CoredumpJournal::scheduleTimeout()
     m_timeout.start(std::chrono::milliseconds(std::min<int64_t>(delayMs, 60000)));
 }
 
-std::string CoredumpJournal::field(const char *name) const
+static std::string journalField(sd_journal *journal, const char *name)
 {
     const void *data = nullptr;
     size_t length = 0;
-    if (sd_journal_get_data(m_journal, name, &data, &length) < 0)
+    if (sd_journal_get_data(journal, name, &data, &length) < 0)
         return {};
     const size_t prefix = strlen(name) + 1;
     if (length < prefix)
         return {};
     return std::string(static_cast<const char *>(data) + prefix, length - prefix);
+}
+
+std::string CoredumpJournal::field(const char *name) const
+{
+    return journalField(m_journal, name);
+}
+
+// The program logs its entry before the kernel even starts the dump, so it
+// is in the journal by now.
+static void addProgramSymbols(Coredump &dump)
+{
+    sd_journal *journal = nullptr;
+    if (sd_journal_open(&journal, SD_JOURNAL_LOCAL_ONLY) < 0)
+        return;
+    const std::string pid = "_PID=" + std::to_string(dump.pid);
+    sd_journal_add_match(journal, s_programCrashMessageId, 0);
+    sd_journal_add_match(journal, pid.c_str(), 0);
+    sd_journal_set_data_threshold(journal, 0);
+    sd_journal_seek_tail(journal);
+    if (sd_journal_previous(journal) > 0)
+        dump.addProgramSymbols(journalField(journal, "CUTEFISH_CRASH_SYMBOLS"),
+                               journalField(journal, "CUTEFISH_CRASH_MODULES"));
+    sd_journal_close(journal);
 }
 
 Coredump CoredumpJournal::currentEntry() const
@@ -121,5 +147,7 @@ Coredump CoredumpJournal::currentEntry() const
     if (timestamp > 0)
         dump.time = timestamp / 1000;
     dump.threads = Coredump::parseStackTrace(field("MESSAGE"));
+    if (dump.pid)
+        addProgramSymbols(dump);
     return dump;
 }
