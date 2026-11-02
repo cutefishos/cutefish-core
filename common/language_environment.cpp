@@ -3,6 +3,7 @@
 
 #include "common/language_environment.h"
 
+#include "base/file.h"
 #include "base/locale.h"
 #include "base/paths.h"
 #include "base/settings.h"
@@ -15,6 +16,8 @@
 #include <cstring>
 #include <langinfo.h>
 #include <locale.h>
+#include <optional>
+#include <string_view>
 #include <unistd.h>
 
 namespace cutefish::core::language {
@@ -154,6 +157,59 @@ std::string localeFor(const std::string& code)
     return utf8Locale(posixLanguage(code));
 }
 
+std::string region()
+{
+    const base::Settings settings(base::paths::cutefishConfig("services"));
+    return strings::toAsciiUpper(settings.stringValue("Region/region"));
+}
+
+// The UTF-8 locales /usr/share/i18n/SUPPORTED lists, which cutefish-locales
+// can generate.
+static const std::vector<std::string>& supportedLocales()
+{
+    static const std::vector<std::string> names = [] {
+        std::vector<std::string> result;
+        const std::optional<std::string> contents = base::file::read("/usr/share/i18n/SUPPORTED");
+        for (const std::string& line : strings::split(contents.value_or(std::string()), '\n')) {
+            const std::vector<std::string> fields = strings::splitWhitespace(line);
+            if (fields.size() == 2 && fields[1] == "UTF-8")
+                result.push_back(fields[0]);
+        }
+        return result;
+    }();
+    return names;
+}
+
+static bool isSupported(const std::string& name)
+{
+    const std::vector<std::string>& supported = supportedLocales();
+    return std::find(supported.begin(), supported.end(), name) != supported.end() || isAvailable(name);
+}
+
+std::string formatsLocale(const std::string& code, const std::string& region)
+{
+    if (region.empty())
+        return {};
+    const icu::Locale language(code.c_str());
+    if (!language.isBogus() && *language.getLanguage()) {
+        UErrorCode status = U_ZERO_ERROR;
+        icu::Locale full(language);
+        full.addLikelySubtags(status);
+        const std::string regional = std::string(full.getLanguage()) + '_' + full.getScript() + '_' + region;
+        const std::string name = utf8Locale(posixLanguage(regional));
+        if (isSupported(name))
+            return name;
+    }
+    UErrorCode status = U_ZERO_ERROR;
+    icu::Locale likely(("und_" + region).c_str());
+    likely.addLikelySubtags(status);
+    if (U_FAILURE(status) || !*likely.getLanguage() || std::string_view(likely.getCountry()) != region)
+        return {};
+    const std::string name = utf8Locale(
+            posixLanguage(std::string(likely.getLanguage()) + '_' + likely.getScript() + '_' + likely.getCountry()));
+    return isSupported(name) ? name : std::string();
+}
+
 std::vector<std::string> translationLanguages(const std::vector<std::string>& codes)
 {
     std::vector<std::string> languages;
@@ -165,7 +221,12 @@ std::vector<std::string> translationLanguages(const std::vector<std::string>& co
     return languages;
 }
 
-void apply(Environment& environment, const std::vector<std::string>& codes)
+// What a region decides; LC_MESSAGES, LC_COLLATE and LC_CTYPE follow the
+// language, LC_IDENTIFICATION describes the locale itself.
+static const char* const kRegionalCategories[] = {"LC_TIME", "LC_NUMERIC", "LC_MONETARY", "LC_MEASUREMENT",
+                                                  "LC_PAPER", "LC_ADDRESS", "LC_TELEPHONE", "LC_NAME"};
+
+void apply(Environment& environment, const std::vector<std::string>& codes, const std::string& region)
 {
     const std::vector<std::string> languages = translationLanguages(codes);
     if (languages.empty())
@@ -180,6 +241,12 @@ void apply(Environment& environment, const std::vector<std::string>& codes)
     for (auto& [name, value] : environment) {
         if (name.starts_with("LC_") && !value.empty() && !isAvailable(value))
             value = localeName;
+    }
+    const auto primary = std::find_if(codes.begin(), codes.end(), [](const std::string& code) { return !code.empty(); });
+    const std::string formats = formatsLocale(*primary, region);
+    if (!formats.empty() && isAvailable(formats)) {
+        for (const char* category : kRegionalCategories)
+            environment[category] = formats;
     }
     // LC_CTYPE overrides LANG for toolkits and Fontconfig, including valid but non-UTF-8 values like C.
     const std::string ctype = valueOf(environment, "LC_CTYPE");
@@ -200,7 +267,7 @@ void apply(Environment& environment, const std::vector<std::string>& codes)
 
 void apply(Environment& environment)
 {
-    language::apply(environment, preferredLanguages());
+    language::apply(environment, preferredLanguages(), region());
 }
 
 } // namespace cutefish::core::language

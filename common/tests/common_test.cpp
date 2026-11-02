@@ -38,6 +38,37 @@ TEST(LanguageEnvironment, messagesStopAtEnglish)
     EXPECT_EQ(environment["HOME"], "/home/test");
 }
 
+TEST(LanguageEnvironment, regionsNameTheirFormatsLocale)
+{
+    EXPECT_EQ(language::formatsLocale("zh_Hans_CN", "SG"), "zh_SG.UTF-8");
+    EXPECT_EQ(language::formatsLocale("en_US", "SG"), "en_SG.UTF-8");
+    EXPECT_EQ(language::formatsLocale("de_DE", "AT"), "de_AT.UTF-8");
+    // No Japanese locale for Singapore: the region's own.
+    EXPECT_EQ(language::formatsLocale("ja_JP", "SG"), "en_SG.UTF-8");
+    EXPECT_EQ(language::formatsLocale("en_US", "JP"), "ja_JP.UTF-8");
+    EXPECT_EQ(language::formatsLocale("en_US", ""), "");
+    EXPECT_EQ(language::formatsLocale("en_US", "AQ"), "");
+}
+
+TEST(LanguageEnvironment, regionNamesTheRegionalCategories)
+{
+    if (!language::isAvailable("en_SG.UTF-8"))
+        GTEST_SKIP() << "en_SG.UTF-8 is not generated";
+    Environment environment {{"LC_TIME", "C.UTF-8"}, {"LC_COLLATE", "C.UTF-8"}};
+    language::apply(environment, {"en_US"}, "SG");
+    for (const char* category : {"LC_TIME", "LC_NUMERIC", "LC_MONETARY", "LC_MEASUREMENT", "LC_PAPER", "LC_ADDRESS",
+                                 "LC_TELEPHONE", "LC_NAME"})
+        EXPECT_EQ(environment[category], "en_SG.UTF-8") << category;
+    EXPECT_EQ(environment["LC_COLLATE"], "C.UTF-8");
+    EXPECT_NE(environment["LC_MESSAGES"], "en_SG.UTF-8");
+
+    // Without a region the system's categories stay.
+    Environment kept {{"LC_TIME", "C.UTF-8"}};
+    language::apply(kept, {"en_US"});
+    EXPECT_EQ(kept["LC_TIME"], "C.UTF-8");
+    EXPECT_FALSE(kept.contains("LC_PAPER"));
+}
+
 TEST(ProxyEnvironment, manualModeSetsEveryVariable)
 {
     ProxySettings settings;

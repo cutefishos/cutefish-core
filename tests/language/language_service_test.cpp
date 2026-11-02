@@ -13,12 +13,15 @@
 #include "base/dbus.h"
 #include "base/event_loop.h"
 #include "base/file.h"
+#include "base/locale.h"
 #include "base/settings.h"
+#include "common/language_environment.h"
 #include "locale/language.h"
 #include "support/wait.h"
 
 using namespace cutefish::base;
 using namespace std::chrono_literals;
+namespace language = cutefish::core::language;
 
 namespace {
 
@@ -123,6 +126,69 @@ TEST(LanguageServiceTest, MissingLocaleIsGeneratedThenPublishedAgain)
     EXPECT_EQ(published, 1);
     finish(true);
     EXPECT_EQ(published, 2);
+}
+
+TEST(LanguageServiceTest, RegionIsStoredAndPublished)
+{
+    file::TemporaryDirectory directory("/tmp", "language-test");
+    ASSERT_TRUE(directory.isValid());
+
+    Settings settings(directory.path() + "/services.conf");
+    settings.setValue("Language/language", "en_US");
+    settings.sync();
+
+    Language language(settings, nullptr, {});
+    std::vector<std::map<std::string, std::string>> published;
+    language.applyEnvironment = [&published](const std::map<std::string, std::string> &variables) {
+        published.push_back(variables);
+    };
+    std::vector<std::string> requested;
+    language.generateLocale = [&](const std::string &locale, std::function<void(bool)>) {
+        requested.push_back(locale);
+        return dbus::PendingCall();
+    };
+
+    EXPECT_EQ(language.region(), Locale::systemRegion());
+    language.setRegion("sg");
+    EXPECT_EQ(language.region(), "SG");
+    ASSERT_EQ(published.size(), 1u);
+    if (language::isAvailable("en_SG.UTF-8"))
+        EXPECT_EQ(published.back().at("LC_TIME"), "en_SG.UTF-8");
+    EXPECT_EQ(Settings(directory.path() + "/services.conf").stringValue("Region/region"), "SG");
+
+    // Not a region, or no change: nothing happens.
+    language.setRegion("Singapore");
+    language.setRegion("SG");
+    language.setFirstWeekday(9);
+    language.setMeasurementSystem("imperial");
+    EXPECT_EQ(published.size(), 1u);
+
+    language.setFirstWeekday(1);
+    language.setMeasurementSystem("uk");
+    language.setTemperatureUnit("fahrenheit");
+    language.setTwentyFourHour(2);
+    EXPECT_EQ(published.size(), 5u);
+    EXPECT_EQ(language.regionalPreferences(), (std::map<std::string, std::string> {{"firstWeekday", "1"},
+                                                                                {"measurement", "uk"},
+                                                                                {"region", "SG"},
+                                                                                {"temperature", "fahrenheit"},
+                                                                                {"twentyFourHour", "true"}}));
+    const RegionalPreferences preferences = RegionalPreferences::read(directory.path() + "/services.conf");
+    EXPECT_EQ(preferences.twentyFourHour, true);
+    EXPECT_EQ(preferences.measurementSystem, MeasurementSystem::UK);
+
+    language.setTwentyFourHour(1);
+    EXPECT_EQ(language.regionalPreferences().at("twentyFourHour"), "false");
+    language.setTwentyFourHour(0);
+    language.setFirstWeekday(0);
+    language.setRegion({});
+    EXPECT_EQ(language.region(), Locale::systemRegion());
+    EXPECT_EQ(language.regionalPreferences(), (std::map<std::string, std::string> {{"measurement", "uk"},
+                                                                                {"temperature", "fahrenheit"}}));
+
+    // Greenland has no English locale: Kalaallisut's is generated.
+    language.setRegion("GL");
+    EXPECT_EQ(requested, std::vector<std::string> {"kl_GL.UTF-8"});
 }
 
 TEST(LanguageServiceTest, NamesLocalesAsTheSessionDoes)

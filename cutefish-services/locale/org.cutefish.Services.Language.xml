@@ -9,8 +9,31 @@
         <arg name="value" type="as" direction="in"/>
     </method>
 
+    <method name="setRegion">
+        <arg name="value" type="s" direction="in"/>
+    </method>
+
+    <method name="setFirstWeekday">
+        <arg name="value" type="i" direction="in"/>
+    </method>
+
+    <method name="setMeasurementSystem">
+        <arg name="value" type="s" direction="in"/>
+    </method>
+
+    <method name="setTemperatureUnit">
+        <arg name="value" type="s" direction="in"/>
+    </method>
+
+    <method name="setTwentyFourHour">
+        <arg name="value" type="i" direction="in"/>
+    </method>
+
     <property name="preferredLanguages" type="as" access="read"/>
     <property name="languageCode" type="s" access="read"/>
+    <property name="environment" type="a{ss}" access="read"/>
+    <property name="region" type="s" access="read"/>
+    <property name="regionalPreferences" type="a{ss}" access="read"/>
 
     <signal name="languageChanged"></signal>
   </interface>
