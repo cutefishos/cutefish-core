@@ -14,6 +14,7 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 
 add_subdirectory(common)
 add_subdirectory(appruntime)
+add_subdirectory(applicationsfolder)
 add_subdirectory(locales)
 add_subdirectory(privacy)
 add_subdirectory(session)

@@ -1,0 +1,5 @@
+[D-BUS Service]
+Name=org.cutefish.ApplicationsFolder
+Exec=@CMAKE_INSTALL_FULL_LIBEXECDIR@/cutefish-applications-folder
+User=root
+SystemdService=cutefish-applications-folder.service

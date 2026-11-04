@@ -1,0 +1,11 @@
+[Unit]
+Description=Cutefish shared Applications folder
+
+[Service]
+Type=dbus
+BusName=org.cutefish.ApplicationsFolder
+ExecStart=@CMAKE_INSTALL_FULL_LIBEXECDIR@/cutefish-applications-folder
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ReadWritePaths=/Applications
