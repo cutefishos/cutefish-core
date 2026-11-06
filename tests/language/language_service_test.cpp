@@ -187,6 +187,7 @@ TEST(LanguageServiceTest, RegionIsStoredAndPublished)
                                                                                 {"temperature", "fahrenheit"}}));
 
     // Greenland has no English locale: Kalaallisut's is generated.
+    requested.clear();
     language.setRegion("GL");
     EXPECT_EQ(requested, std::vector<std::string> {"kl_GL.UTF-8"});
 }
