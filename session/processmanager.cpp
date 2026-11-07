@@ -4,9 +4,11 @@
 #include "processmanager.h"
 
 #include <algorithm>
+#include <chrono>
 #include <climits>
 #include <cstdlib>
 #include <filesystem>
+#include <tuple>
 #include <unistd.h>
 
 #include <systemd/sd-bus.h>
@@ -362,7 +364,43 @@ void ProcessManager::endSession(bool behindLoginScreen)
         for (const std::string &appId : runtime::runningApplications())
             runtime::quitApplication(appId);
     }
+    // The runtime also has the user manager stop every application scope.
+    // The compositor goes only once they are gone, or after a moment: an
+    // application still shutting down must not lose its display first.
+    m_applicationsDeadline = std::chrono::steady_clock::now() + 3s;
+    m_applicationsPoll.setSingleShot(true);
+    m_applicationsPoll.onTimeout = [this, behindLoginScreen] { finishEnding(behindLoginScreen); };
+    finishEnding(behindLoginScreen);
+}
 
+// (ssssssouso): a unit as the user manager lists it.
+using UnitInfo = std::tuple<std::string, std::string, std::string, std::string, std::string, std::string,
+                            dbus::ObjectPath, uint32_t, std::string, dbus::ObjectPath>;
+
+void ProcessManager::finishEnding(bool behindLoginScreen)
+{
+    dbus::Connection *bus = dbus::Connection::session();
+    if (!bus || std::chrono::steady_clock::now() >= m_applicationsDeadline) {
+        stopSessionProcesses(behindLoginScreen);
+        return;
+    }
+    dbus::Message list = bus->newMethodCall("org.freedesktop.systemd1", "/org/freedesktop/systemd1",
+                                            "org.freedesktop.systemd1.Manager", "ListUnitsByPatterns");
+    list.append(std::vector<std::string> {"active", "activating", "deactivating"},
+                std::vector<std::string> {"app-*.scope"});
+    m_applicationsCall = bus->callAsync(list, [this, behindLoginScreen](const dbus::Reply &reply) {
+        std::vector<UnitInfo> units;
+        // Without an answer the session ends as it always did.
+        if (reply.read(units) && !units.empty()) {
+            m_applicationsPoll.start(100ms);
+            return;
+        }
+        stopSessionProcesses(behindLoginScreen);
+    });
+}
+
+void ProcessManager::stopSessionProcesses(bool behindLoginScreen)
+{
     m_shellProcess->stop();
     stopProcesses(m_coreProcesses);
 

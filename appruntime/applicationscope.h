@@ -19,4 +19,10 @@ void adopt(const std::string &appId, uint32_t pid);
 // with its last process is no failure.
 void killAll(const std::string &unitName);
 
+// Asks the user manager to stop every application scope that is up: the
+// ones adopt() made and those applications moved themselves into, which
+// the runtime no longer tracks. systemd ends their processes as the end of
+// a session does, SIGTERM first and SIGKILL after its timeout.
+void stopAll();
+
 } // namespace ApplicationScope
