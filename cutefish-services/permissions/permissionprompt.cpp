@@ -57,13 +57,21 @@ static int64_t integerOf(const dbus::VariantMap &map, const std::string &key)
     return 0;
 }
 
-// The dictionaries of an `aa{sv}` option; nothing for any other shape.
+// The dictionaries of an `aa{sv}` option. The portal boxes each one (`av`),
+// so that shape is read too; nothing for any other.
 static std::vector<dbus::VariantMap> listOf(const dbus::VariantMap &map, const std::string &key)
 {
     const auto it = map.find(key);
     if (it == map.end())
         return {};
-    return it->second.value<std::vector<dbus::VariantMap>>();
+    if (const auto list = it->second.get<std::vector<dbus::VariantMap>>())
+        return *list;
+    std::vector<dbus::VariantMap> result;
+    for (const dbus::Variant &item : it->second.value<std::vector<dbus::Variant>>()) {
+        if (const auto entry = item.get<dbus::VariantMap>())
+            result.push_back(*entry);
+    }
+    return result;
 }
 
 namespace {
