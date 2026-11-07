@@ -30,3 +30,4 @@ install(PROGRAMS cutefish-wayland-session DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(FILES document-portal-stop.conf
         DESTINATION /usr/lib/systemd/user/xdg-document-portal.service.d
         RENAME cutefish-session.conf)
+install(FILES cutefish-mimeapps.list DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
