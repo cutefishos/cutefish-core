@@ -162,6 +162,9 @@ bool AppRuntime::quitAll()
     for (const uint32_t pid : pids)
         result |= terminate(pid);
 
+    // An application that moved to a scope of its own is no longer tracked;
+    // the user manager stops every application scope, those included.
+    ApplicationScope::stopAll();
     return result;
 }
 

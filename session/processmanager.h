@@ -4,6 +4,7 @@
 #ifndef PROCESSMANAGER_H
 #define PROCESSMANAGER_H
 
+#include <chrono>
 #include <functional>
 #include <map>
 #include <memory>
@@ -53,6 +54,10 @@ public:
 
 private:
     void leave();
+    // The rest of endSession once the applications are gone or the moment
+    // given them is over: the compositor outlives them.
+    void finishEnding(bool behindLoginScreen);
+    void stopSessionProcesses(bool behindLoginScreen);
     void notifyEndingStopped(Ending ending, const std::string &outcome, const std::string &applicationId);
     void startAfterCompositorReady();
     void publishXwaylandEnvironment(bool startDesktop);
@@ -72,6 +77,9 @@ private:
     std::unique_ptr<RestartPolicy> m_shellRestart;
     cutefish::base::dbus::NameWatch m_servicesWatch;
     cutefish::base::dbus::PendingCall m_quitAllCall;
+    cutefish::base::dbus::PendingCall m_applicationsCall;
+    cutefish::base::Timer m_applicationsPoll;
+    std::chrono::steady_clock::time_point m_applicationsDeadline;
     cutefish::base::Subscription m_registryChanged;
     cutefish::base::Timer m_autostartTimer;
     cutefish::base::Timer m_exitTimer;

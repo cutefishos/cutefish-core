@@ -9,6 +9,7 @@
 #include <chrono>
 #include <csignal>
 #include <functional>
+#include <tuple>
 #include <poll.h>
 
 #include <gtest/gtest.h>
@@ -17,6 +18,16 @@ using namespace cutefish::base;
 
 static constexpr char kService[] = "org.cutefish.AppRuntime";
 static constexpr char kPath[] = "/AppRuntime";
+
+// (ssssssouso): a unit as systemd's manager lists it.
+using UnitInfo = std::tuple<std::string, std::string, std::string, std::string, std::string, std::string,
+                            dbus::ObjectPath, uint32_t, std::string, dbus::ObjectPath>;
+
+static UnitInfo activeScope(const std::string& name)
+{
+    return {name, name, "loaded", "active", "running", "", dbus::ObjectPath {"/org/freedesktop/systemd1/unit/x"},
+            0, "", dbus::ObjectPath {"/"}};
+}
 
 namespace {
 
@@ -111,6 +122,39 @@ TEST_F(RuntimeTest, launchesTracksAndQuitsCommands)
     EXPECT_TRUE(proxy.call("quitAll").value<bool>().value_or(false));
     ASSERT_TRUE(runUntil([&] { return quit.size() == 2; }, 5000));
     EXPECT_FALSE(proxy.call("isRunning", std::string("sleep")).value<bool>().value_or(true));
+}
+
+// A stand-in for the user manager: quitAll has it stop every application
+// scope, the ones the runtime made and those applications moved into.
+TEST_F(RuntimeTest, quitAllStopsEveryApplicationScope)
+{
+    std::vector<std::string> stopped;
+    dbus::Object manager(bus.get(), "/org/freedesktop/systemd1", "org.freedesktop.systemd1.Manager");
+    manager.addMethod(
+            "ListUnitsByPatterns",
+            [](std::vector<std::string>, std::vector<std::string> patterns) {
+                std::vector<UnitInfo> units;
+                if (std::find(patterns.begin(), patterns.end(), "app-*.scope") != patterns.end()) {
+                    units.push_back(activeScope("app-cutefish-sleeper-123.scope"));
+                    units.push_back(activeScope("app-org.example.Browser-456.scope"));
+                }
+                return units;
+            },
+            dbus::ArgumentNames {{"states", "patterns"}, {"units"}});
+    manager.addMethod(
+            "StopUnit",
+            [&stopped](std::string name, std::string) {
+                stopped.push_back(name);
+                return dbus::ObjectPath {"/org/freedesktop/systemd1/job/1"};
+            },
+            dbus::ArgumentNames {{"name", "mode"}, {"job"}});
+    ASSERT_TRUE(manager.publish());
+    ASSERT_TRUE(bus->requestName("org.freedesktop.systemd1", dbus::Connection::DoNotQueue));
+
+    runtime().call("quitAll");
+    ASSERT_TRUE(runUntil([&] { return stopped.size() == 2; }, 5000));
+    std::sort(stopped.begin(), stopped.end());
+    EXPECT_EQ(stopped, (std::vector<std::string> {"app-cutefish-sleeper-123.scope", "app-org.example.Browser-456.scope"}));
 }
 
 TEST_F(RuntimeTest, refusesWhatItCannotStart)
