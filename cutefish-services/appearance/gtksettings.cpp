@@ -44,7 +44,7 @@ void writeGtkSettings(const GtkSettings &gtk)
         settings.setValue("Settings/gtk-icon-theme-name", gtk.iconTheme);
         settings.setValue("Settings/gtk-cursor-theme-name", gtk.cursorTheme);
         settings.setValue("Settings/gtk-cursor-theme-size", gtk.cursorSize);
-        settings.setValue("Settings/gtk-enable-animations", true);
+        settings.setValue("Settings/gtk-enable-animations", gtk.animations);
         settings.setValue("Settings/gtk-theme-name", gtkTheme);
         settings.setValue("Settings/gtk-decoration-layout", "close,minimize,maximize:");
         settings.sync();
@@ -66,7 +66,7 @@ void writeGtkSettings(const GtkSettings &gtk)
             {"icon-theme", gtk.iconTheme},
             {"cursor-theme", gtk.cursorTheme},
             {"cursor-size", gtk.cursorSize},
-            {"enable-animations", false},
+            {"enable-animations", gtk.animations},
     });
     gsettings::writeGroup("org/gnome/desktop/wm/preferences", {
             {"button-layout", std::string("close,minimize,maximize:")},

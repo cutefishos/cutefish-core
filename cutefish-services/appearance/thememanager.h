@@ -14,6 +14,10 @@
 #include "base/settings.h"
 #include "base/signal.h"
 
+namespace cutefish::powerprofiles {
+class PowerProfiles;
+}
+
 class LoginBackground;
 class ScheduledFeature;
 class WallpaperManager;
@@ -100,6 +104,7 @@ private:
     std::unique_ptr<WallpaperManager> m_wallpaperManager;
     std::unique_ptr<LoginBackground> m_loginBackground;
     std::unique_ptr<ScheduledFeature> m_darkMode;
+    std::unique_ptr<cutefish::powerprofiles::PowerProfiles> m_powerProfiles;
     std::unique_ptr<cutefish::base::dbus::Object> m_object;
     std::vector<cutefish::base::Subscription> m_subscriptions;
 

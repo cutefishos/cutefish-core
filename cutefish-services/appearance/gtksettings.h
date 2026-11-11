@@ -15,6 +15,7 @@ struct GtkSettings
     std::string iconTheme;
     std::string cursorTheme;
     int cursorSize = 24;
+    bool animations = true;
 };
 
 // Mirrors the system appearance into GTK's config: settings.ini for Xwayland clients and the

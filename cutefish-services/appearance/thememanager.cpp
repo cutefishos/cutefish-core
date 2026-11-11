@@ -11,6 +11,7 @@
 #include <algorithm>
 
 #include "common/language_environment.h"
+#include "cutefish/powerprofiles/power_profiles.h"
 
 using namespace cutefish::base;
 
@@ -58,6 +59,11 @@ ThemeManager::ThemeManager(Settings &settings, dbus::Connection *session, dbus::
     if (!m_settings.contains(s_systemFontName))
         m_settings.setValue(s_systemFontName, "Inter");
     m_settings.sync();
+
+    m_powerProfiles = std::make_unique<cutefish::powerprofiles::PowerProfiles>(system);
+    m_subscriptions.push_back(m_powerProfiles->activeProfileChanged.connect([this] {
+        updateGtk3Config();
+    }));
 
     // Ash's DarkLightModeControllerImpl: the same schedule as the night
     // light, without custom times.
@@ -371,6 +377,7 @@ void ThemeManager::updateGtk3Config()
     gtk.iconTheme = m_iconTheme.empty() ? std::string("Cutefish") : m_iconTheme;
     gtk.cursorTheme = m_cursorTheme;
     gtk.cursorSize = m_cursorSize;
+    gtk.animations = m_powerProfiles->activeProfile() != "power-saver";
     writeGtkSettings(gtk);
 }
 

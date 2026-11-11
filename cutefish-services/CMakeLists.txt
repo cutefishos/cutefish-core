@@ -2,7 +2,7 @@ project(cutefish-services)
 set(TARGET cutefish-services)
 
 find_package(CutefishToolkit REQUIRED)
-find_package(CutefishClients REQUIRED COMPONENTS display)
+find_package(CutefishClients REQUIRED COMPONENTS display powerprofiles)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(ServicesSystemd REQUIRED IMPORTED_TARGET libsystemd)
 pkg_check_modules(ServicesFontconfig REQUIRED IMPORTED_TARGET fontconfig)
@@ -85,6 +85,7 @@ target_compile_definitions(${TARGET} PRIVATE
 target_link_libraries(${TARGET} PRIVATE
         Cutefish::Toolkit
         Cutefish::DisplayClient
+        Cutefish::PowerProfilesClient
         cutefish-core-common
         cutefish-clipboard-backend
         cutefish-idle-backend
