@@ -222,8 +222,6 @@ void Application::initEnvironments()
     setenv("GSETTINGS_BACKEND", "keyfile", 1);
 
     // Qt
-    setenv("QT_QPA_PLATFORM", "wayland", 1);
-    setenv("GDK_BACKEND", "wayland", 1);
     if (isEmptyVariable("WAYLAND_DISPLAY"))
         setenv("WAYLAND_DISPLAY", "cutefish-0", 1);
     setenv("QT_QPA_PLATFORMTHEME", "cutefish", 1);
