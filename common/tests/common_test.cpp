@@ -38,6 +38,25 @@ TEST(LanguageEnvironment, messagesStopAtEnglish)
     EXPECT_EQ(environment["HOME"], "/home/test");
 }
 
+TEST(LanguageEnvironment, portugueseFallsBackToBrazilianCatalogs)
+{
+    Environment portugal;
+    language::apply(portugal, {"pt_PT"});
+    EXPECT_EQ(portugal["LANGUAGE"], "pt_PT:pt_BR");
+
+    Environment ordered;
+    language::apply(ordered, {"pt_AO", "fr_FR", "pt_BR", "en_US", "pt_MZ"});
+    EXPECT_EQ(ordered["LANGUAGE"], "pt_AO:pt_BR:fr_FR:en_US");
+
+    Environment brazil;
+    language::apply(brazil, {"pt_BR", "es_MX"});
+    EXPECT_EQ(brazil["LANGUAGE"], "pt_BR:es_MX");
+
+    Environment others;
+    language::apply(others, {"es_MX", "fr_CA", "de_AT"});
+    EXPECT_EQ(others["LANGUAGE"], "es_MX:fr_CA:de_AT");
+}
+
 TEST(LanguageEnvironment, regionsNameTheirFormatsLocale)
 {
     EXPECT_EQ(language::formatsLocale("zh_Hans_CN", "SG"), "zh_SG.UTF-8");
