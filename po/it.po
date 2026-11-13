@@ -1,0 +1,253 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: cutefish-core\n"
+"Report-Msgid-Bugs-To: https://github.com/cutefishos\n"
+"POT-Creation-Date: 2026-10-20 09:33+0800\n"
+"PO-Revision-Date: 2026-10-20 09:33+0800\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Calculating…"
+msgstr "Calcolo in corso…"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} until fully charged"
+msgstr "{time} alla carica completa"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} remaining"
+msgstr "{time} rimanenti"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Fully charged."
+msgstr "Carica completa."
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "Charging paused at {percent}%"
+msgstr "Ricarica sospesa al {percent}%"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Not charging"
+msgstr "Non in carica"
+
+#. TRANSLATORS: days in a short battery time such as "1d 2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}d"
+msgstr "{n} g"
+
+#. TRANSLATORS: hours in a short battery time such as "2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}h"
+msgstr "{n} h"
+
+#. TRANSLATORS: minutes in a short battery time such as "2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}m"
+msgstr "{n} min"
+
+#. TRANSLATORS: when the battery was last fully charged, under a minute ago.
+#: cutefish-services/battery/battery.cpp
+msgid "now"
+msgstr "adesso"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} ago"
+msgstr "{time} fa"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Low Battery"
+msgstr "Batteria quasi scarica"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Battery Critically Low"
+msgstr "Batteria in esaurimento"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Battery Empty"
+msgstr "Batteria scarica"
+
+#: cutefish-services/battery/batterywarning.cpp
+#, python-brace-format
+msgid "{percent}% of battery remaining ({time})."
+msgstr "Batteria rimanente: {percent}% ({time})."
+
+#: cutefish-services/battery/batterywarning.cpp
+#, python-brace-format
+msgid "{percent}% of battery remaining."
+msgstr "Batteria rimanente: {percent}%."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Save your work and connect to power. The computer will shut down when the battery is nearly empty."
+msgstr "Salva il tuo lavoro e collega l’alimentazione. Il computer si spegnerà quando la batteria sarà quasi scarica."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power. The computer will hibernate when the battery is nearly empty."
+msgstr "Collega l’alimentazione. Il computer andrà in ibernazione quando la batteria sarà quasi scarica."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Save your work and connect to power. The computer will go to sleep when the battery is nearly empty."
+msgstr "Salva il tuo lavoro e collega l’alimentazione. Il computer andrà in sospensione quando la batteria sarà quasi scarica."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power soon."
+msgstr "Collega presto l’alimentazione."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to shut down. Connect to power to keep it running."
+msgstr "Il computer sta per spegnersi. Collega l’alimentazione per mantenerlo acceso."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to hibernate. Connect to power to keep it running."
+msgstr "Il computer sta per andare in ibernazione. Collega l’alimentazione per mantenerlo acceso."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to go to sleep. Connect to power to keep it running."
+msgstr "Il computer sta per andare in sospensione. Collega l’alimentazione per mantenerlo acceso."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power now."
+msgstr "Collega subito l’alimentazione."
+
+#: cutefish-services/crash/crashdialog.cpp
+#, python-brace-format
+msgid "“{name}” quit unexpectedly"
+msgstr "Chiusura inaspettata di “{name}”"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "Close"
+msgstr "Chiudi"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "Reopen"
+msgstr "Riapri"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "OK"
+msgstr "OK"
+
+#: cutefish-services/crash/crashdialog.cpp
+#, python-brace-format
+msgid "Reason: {reason}"
+msgstr "Motivo: {reason}"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "It is restarted automatically."
+msgstr "Il riavvio è automatico."
+
+#: cutefish-services/crash/crashmanager.cpp
+msgid "Application Runtime"
+msgstr "Runtime delle applicazioni"
+
+#: cutefish-services/locale/language.cpp
+msgid "Some applications may need to be restarted for the change to take effect."
+msgstr "Potrebbe essere necessario riavviare alcune applicazioni per applicare la modifica."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+#, python-brace-format
+msgid "Share your screen with “{name}”"
+msgstr "Condividi lo schermo con “{name}”"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a display or a window. What is shown on it will be visible to the application until it stops sharing."
+msgstr "Scegli uno schermo o una finestra. Ciò che vi è mostrato sarà visibile all’applicazione finché non smette di condividere."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a window. Its contents will be visible to the application until it stops sharing."
+msgstr "Scegli una finestra. Il suo contenuto sarà visibile all’applicazione finché non smette di condividere."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a display. Everything shown on it, including other windows, will be visible to the application until it stops sharing."
+msgstr "Scegli uno schermo. Tutto ciò che vi è mostrato, comprese altre finestre, sarà visibile all’applicazione finché non smette di condividere."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Share"
+msgstr "Condividi"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Windows"
+msgstr "Finestre"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Displays"
+msgstr "Schermi"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Always allow this app"
+msgstr "Consenti sempre questa app"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Let “An app” control this computer?"
+msgstr "Consentire a “Un’app” di controllare questo computer?"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+#, python-brace-format
+msgid "Let “{name}” control this computer?"
+msgstr "Consentire a “{name}” di controllare questo computer?"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "It will see your screen and use the pointer and keyboard until you stop it with the Stop button in the status bar. Using the pointer or keyboard yourself pauses it, and it cannot answer system dialogs like this one."
+msgstr "Vedrà il tuo schermo e userà puntatore e tastiera finché non la fermi con il pulsante di arresto nella barra di stato. Se usi tu il puntatore o la tastiera, si mette in pausa, e non può rispondere a finestre di sistema come questa."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Allow"
+msgstr "Consenti"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Cancel"
+msgstr "Annulla"
+
+#: session/processmanager.cpp
+msgid "Log out cancelled"
+msgstr "Chiusura della sessione annullata"
+
+#: session/processmanager.cpp
+msgid "Restart cancelled"
+msgstr "Riavvio annullato"
+
+#: session/processmanager.cpp
+msgid "Shutdown cancelled"
+msgstr "Spegnimento annullato"
+
+#: session/processmanager.cpp
+msgid "An application cancelled it."
+msgstr "Un’applicazione ha annullato l’operazione."
+
+#: session/processmanager.cpp
+msgid "An application did not quit."
+msgstr "Un’applicazione non si è chiusa."
+
+#: session/processmanager.cpp
+#, python-brace-format
+msgid "{name} cancelled it."
+msgstr "{name} ha annullato l’operazione."
+
+#: session/processmanager.cpp
+#, python-brace-format
+msgid "{name} did not quit."
+msgstr "Non è stato possibile chiudere {name}."
+
+#. TRANSLATORS: the sender of a notification from the session itself.
+#: session/processmanager.cpp
+msgid "System"
+msgstr "Sistema"
+
+#: session/cutefish-wayland.desktop
+msgid "Cutefish (Wayland)"
+msgstr "Cutefish (Wayland)"
+
+#: session/cutefish-wayland.desktop
+msgid "Cutefish desktop session"
+msgstr "Sessione desktop Cutefish"

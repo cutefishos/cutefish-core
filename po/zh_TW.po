@@ -1,0 +1,253 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: cutefish-core\n"
+"Report-Msgid-Bugs-To: https://github.com/cutefishos\n"
+"POT-Creation-Date: 2026-10-20 09:33+0800\n"
+"PO-Revision-Date: 2026-10-20 09:33+0800\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Calculating…"
+msgstr "正在計算…"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} until fully charged"
+msgstr "{time}後充飽電"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} remaining"
+msgstr "剩餘 {time}"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Fully charged."
+msgstr "已充飽電。"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "Charging paused at {percent}%"
+msgstr "已在 {percent}% 暫停充電"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Not charging"
+msgstr "未在充電"
+
+#. TRANSLATORS: days in a short battery time such as "1d 2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}d"
+msgstr "{n} 天"
+
+#. TRANSLATORS: hours in a short battery time such as "2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}h"
+msgstr "{n} 小時"
+
+#. TRANSLATORS: minutes in a short battery time such as "2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}m"
+msgstr "{n} 分鐘"
+
+#. TRANSLATORS: when the battery was last fully charged, under a minute ago.
+#: cutefish-services/battery/battery.cpp
+msgid "now"
+msgstr "剛剛"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} ago"
+msgstr "{time}前"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Low Battery"
+msgstr "電池電量低"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Battery Critically Low"
+msgstr "電池電量嚴重不足"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Battery Empty"
+msgstr "電池電量已耗盡"
+
+#: cutefish-services/battery/batterywarning.cpp
+#, python-brace-format
+msgid "{percent}% of battery remaining ({time})."
+msgstr "電池電量剩餘 {percent}%（{time}）。"
+
+#: cutefish-services/battery/batterywarning.cpp
+#, python-brace-format
+msgid "{percent}% of battery remaining."
+msgstr "電池電量剩餘 {percent}%。"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Save your work and connect to power. The computer will shut down when the battery is nearly empty."
+msgstr "請儲存您的工作並接上電源。電池電量即將耗盡時，電腦將會關機。"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power. The computer will hibernate when the battery is nearly empty."
+msgstr "請接上電源。電池電量即將耗盡時，電腦將會進入休眠。"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Save your work and connect to power. The computer will go to sleep when the battery is nearly empty."
+msgstr "請儲存您的工作並接上電源。電池電量即將耗盡時，電腦將會進入睡眠。"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power soon."
+msgstr "請盡快接上電源。"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to shut down. Connect to power to keep it running."
+msgstr "電腦即將關機。接上電源即可讓它繼續運作。"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to hibernate. Connect to power to keep it running."
+msgstr "電腦即將進入休眠。接上電源即可讓它繼續運作。"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to go to sleep. Connect to power to keep it running."
+msgstr "電腦即將進入睡眠。接上電源即可讓它繼續運作。"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power now."
+msgstr "請立即接上電源。"
+
+#: cutefish-services/crash/crashdialog.cpp
+#, python-brace-format
+msgid "“{name}” quit unexpectedly"
+msgstr "「{name}」意外結束"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "Close"
+msgstr "關閉"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "Reopen"
+msgstr "重新開啟"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "OK"
+msgstr "好"
+
+#: cutefish-services/crash/crashdialog.cpp
+#, python-brace-format
+msgid "Reason: {reason}"
+msgstr "原因：{reason}"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "It is restarted automatically."
+msgstr "它會自動重新啟動。"
+
+#: cutefish-services/crash/crashmanager.cpp
+msgid "Application Runtime"
+msgstr "應用程式執行環境"
+
+#: cutefish-services/locale/language.cpp
+msgid "Some applications may need to be restarted for the change to take effect."
+msgstr "部分應用程式可能需要重新啟動才能套用變更。"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+#, python-brace-format
+msgid "Share your screen with “{name}”"
+msgstr "與「{name}」分享您的螢幕"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a display or a window. What is shown on it will be visible to the application until it stops sharing."
+msgstr "選擇一個顯示器或視窗。在應用程式停止分享前，其上顯示的內容都會讓該應用程式看見。"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a window. Its contents will be visible to the application until it stops sharing."
+msgstr "選擇一個視窗。在應用程式停止分享前，其內容都會讓該應用程式看見。"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a display. Everything shown on it, including other windows, will be visible to the application until it stops sharing."
+msgstr "選擇一個顯示器。在應用程式停止分享前，其上顯示的所有內容（包括其他視窗）都會讓該應用程式看見。"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Share"
+msgstr "分享"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Windows"
+msgstr "視窗"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Displays"
+msgstr "顯示器"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Always allow this app"
+msgstr "永遠允許這個 App"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Let “An app” control this computer?"
+msgstr "要讓「某個 App」控制這部電腦嗎？"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+#, python-brace-format
+msgid "Let “{name}” control this computer?"
+msgstr "要讓「{name}」控制這部電腦嗎？"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "It will see your screen and use the pointer and keyboard until you stop it with the Stop button in the status bar. Using the pointer or keyboard yourself pauses it, and it cannot answer system dialogs like this one."
+msgstr "它將能看見您的螢幕並使用指標與鍵盤，直到您按下狀態列中的「停止」按鈕為止。您自己使用指標或鍵盤時它會暫停，而且它無法回應像這樣的系統對話框。"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Allow"
+msgstr "允許"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Cancel"
+msgstr "取消"
+
+#: session/processmanager.cpp
+msgid "Log out cancelled"
+msgstr "已取消登出"
+
+#: session/processmanager.cpp
+msgid "Restart cancelled"
+msgstr "已取消重新啟動"
+
+#: session/processmanager.cpp
+msgid "Shutdown cancelled"
+msgstr "已取消關機"
+
+#: session/processmanager.cpp
+msgid "An application cancelled it."
+msgstr "有應用程式取消了此操作。"
+
+#: session/processmanager.cpp
+msgid "An application did not quit."
+msgstr "有應用程式未結束。"
+
+#: session/processmanager.cpp
+#, python-brace-format
+msgid "{name} cancelled it."
+msgstr "{name} 取消了此操作。"
+
+#: session/processmanager.cpp
+#, python-brace-format
+msgid "{name} did not quit."
+msgstr "{name} 未結束。"
+
+#. TRANSLATORS: the sender of a notification from the session itself.
+#: session/processmanager.cpp
+msgid "System"
+msgstr "系統"
+
+#: session/cutefish-wayland.desktop
+msgid "Cutefish (Wayland)"
+msgstr "Cutefish（Wayland）"
+
+#: session/cutefish-wayland.desktop
+msgid "Cutefish desktop session"
+msgstr "Cutefish 桌面工作階段"

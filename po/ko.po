@@ -1,0 +1,253 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: cutefish-core\n"
+"Report-Msgid-Bugs-To: https://github.com/cutefishos\n"
+"POT-Creation-Date: 2026-10-20 09:33+0800\n"
+"PO-Revision-Date: 2026-10-20 09:33+0800\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Calculating…"
+msgstr "계산 중…"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} until fully charged"
+msgstr "완전히 충전될 때까지 {time}"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} remaining"
+msgstr "{time} 남음"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Fully charged."
+msgstr "완전히 충전되었습니다."
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "Charging paused at {percent}%"
+msgstr "{percent}%에서 충전 일시 정지됨"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Not charging"
+msgstr "충전 안 됨"
+
+#. TRANSLATORS: days in a short battery time such as "1d 2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}d"
+msgstr "{n}일"
+
+#. TRANSLATORS: hours in a short battery time such as "2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}h"
+msgstr "{n}시간"
+
+#. TRANSLATORS: minutes in a short battery time such as "2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}m"
+msgstr "{n}분"
+
+#. TRANSLATORS: when the battery was last fully charged, under a minute ago.
+#: cutefish-services/battery/battery.cpp
+msgid "now"
+msgstr "지금"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} ago"
+msgstr "{time} 전"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Low Battery"
+msgstr "배터리 부족"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Battery Critically Low"
+msgstr "배터리 매우 부족"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Battery Empty"
+msgstr "배터리 방전"
+
+#: cutefish-services/battery/batterywarning.cpp
+#, python-brace-format
+msgid "{percent}% of battery remaining ({time})."
+msgstr "배터리가 {percent}% 남았습니다({time})."
+
+#: cutefish-services/battery/batterywarning.cpp
+#, python-brace-format
+msgid "{percent}% of battery remaining."
+msgstr "배터리가 {percent}% 남았습니다."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Save your work and connect to power. The computer will shut down when the battery is nearly empty."
+msgstr "작업을 저장하고 전원에 연결하십시오. 배터리가 거의 소진되면 컴퓨터가 종료됩니다."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power. The computer will hibernate when the battery is nearly empty."
+msgstr "전원에 연결하십시오. 배터리가 거의 소진되면 컴퓨터가 최대 절전 모드로 전환됩니다."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Save your work and connect to power. The computer will go to sleep when the battery is nearly empty."
+msgstr "작업을 저장하고 전원에 연결하십시오. 배터리가 거의 소진되면 컴퓨터가 잠자기 상태로 전환됩니다."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power soon."
+msgstr "곧 전원에 연결하십시오."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to shut down. Connect to power to keep it running."
+msgstr "컴퓨터가 곧 종료됩니다. 계속 사용하려면 전원에 연결하십시오."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to hibernate. Connect to power to keep it running."
+msgstr "컴퓨터가 곧 최대 절전 모드로 전환됩니다. 계속 사용하려면 전원에 연결하십시오."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to go to sleep. Connect to power to keep it running."
+msgstr "컴퓨터가 곧 잠자기 상태로 전환됩니다. 계속 사용하려면 전원에 연결하십시오."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power now."
+msgstr "지금 전원에 연결하십시오."
+
+#: cutefish-services/crash/crashdialog.cpp
+#, python-brace-format
+msgid "“{name}” quit unexpectedly"
+msgstr "“{name}” 앱이 예기치 않게 종료됨"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "Close"
+msgstr "닫기"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "Reopen"
+msgstr "다시 열기"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "OK"
+msgstr "확인"
+
+#: cutefish-services/crash/crashdialog.cpp
+#, python-brace-format
+msgid "Reason: {reason}"
+msgstr "원인: {reason}"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "It is restarted automatically."
+msgstr "자동으로 다시 시작됩니다."
+
+#: cutefish-services/crash/crashmanager.cpp
+msgid "Application Runtime"
+msgstr "애플리케이션 런타임"
+
+#: cutefish-services/locale/language.cpp
+msgid "Some applications may need to be restarted for the change to take effect."
+msgstr "일부 애플리케이션은 다시 시작해야 변경 사항이 적용될 수 있습니다."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+#, python-brace-format
+msgid "Share your screen with “{name}”"
+msgstr "“{name}” 앱과 화면 공유"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a display or a window. What is shown on it will be visible to the application until it stops sharing."
+msgstr "디스플레이 또는 창을 선택하십시오. 공유를 중단할 때까지 그 위에 표시되는 내용이 애플리케이션에 보입니다."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a window. Its contents will be visible to the application until it stops sharing."
+msgstr "창을 선택하십시오. 공유를 중단할 때까지 창의 내용이 애플리케이션에 보입니다."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a display. Everything shown on it, including other windows, will be visible to the application until it stops sharing."
+msgstr "디스플레이를 선택하십시오. 공유를 중단할 때까지 다른 창을 포함하여 그 위에 표시되는 모든 내용이 애플리케이션에 보입니다."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Share"
+msgstr "공유"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Windows"
+msgstr "창"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Displays"
+msgstr "디스플레이"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Always allow this app"
+msgstr "이 앱을 항상 허용"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Let “An app” control this computer?"
+msgstr "“앱”이 이 컴퓨터를 제어하도록 허용하겠습니까?"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+#, python-brace-format
+msgid "Let “{name}” control this computer?"
+msgstr "“{name}” 앱이 이 컴퓨터를 제어하도록 허용하겠습니까?"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "It will see your screen and use the pointer and keyboard until you stop it with the Stop button in the status bar. Using the pointer or keyboard yourself pauses it, and it cannot answer system dialogs like this one."
+msgstr "상태 막대의 중단 버튼으로 멈출 때까지 화면을 보고 포인터와 키보드를 사용합니다. 직접 포인터나 키보드를 사용하면 일시 정지되며, 이와 같은 시스템 대화상자에는 응답할 수 없습니다."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Allow"
+msgstr "허용"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Cancel"
+msgstr "취소"
+
+#: session/processmanager.cpp
+msgid "Log out cancelled"
+msgstr "로그아웃이 취소됨"
+
+#: session/processmanager.cpp
+msgid "Restart cancelled"
+msgstr "다시 시작이 취소됨"
+
+#: session/processmanager.cpp
+msgid "Shutdown cancelled"
+msgstr "시스템 종료가 취소됨"
+
+#: session/processmanager.cpp
+msgid "An application cancelled it."
+msgstr "애플리케이션이 취소했습니다."
+
+#: session/processmanager.cpp
+msgid "An application did not quit."
+msgstr "애플리케이션이 종료되지 않았습니다."
+
+#: session/processmanager.cpp
+#, python-brace-format
+msgid "{name} cancelled it."
+msgstr "{name} 앱이 취소했습니다."
+
+#: session/processmanager.cpp
+#, python-brace-format
+msgid "{name} did not quit."
+msgstr "{name} 앱이 종료되지 않았습니다."
+
+#. TRANSLATORS: the sender of a notification from the session itself.
+#: session/processmanager.cpp
+msgid "System"
+msgstr "시스템"
+
+#: session/cutefish-wayland.desktop
+msgid "Cutefish (Wayland)"
+msgstr "Cutefish(Wayland)"
+
+#: session/cutefish-wayland.desktop
+msgid "Cutefish desktop session"
+msgstr "Cutefish 데스크톱 세션"
