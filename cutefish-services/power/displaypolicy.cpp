@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <climits>
 #include <cmath>
+#include <optional>
+#include <string>
 #include <utility>
 
 #include "log.h"
@@ -36,6 +38,22 @@ static int secondFadeAt(int timeout)
 
 // An idle panel dims slowly enough not to draw the eye.
 static constexpr std::chrono::milliseconds s_idleFade = 1000ms;
+
+// Whether a colon-separated list of logind inhibitor types names "idle".
+static bool listsIdle(const std::optional<std::string> &types)
+{
+    if (!types)
+        return false;
+
+    size_t start = 0;
+    while (start <= types->size()) {
+        const size_t end = std::min(types->find(':', start), types->size());
+        if (types->compare(start, end - start, "idle") == 0)
+            return true;
+        start = end + 1;
+    }
+    return false;
+}
 
 // A locked screen nobody is using goes dark this soon, whatever the user chose.
 static constexpr int s_lockedDisplayOffTimeout = 30;
@@ -342,6 +360,13 @@ bool DisplayPolicy::lockSession()
 void DisplayPolicy::trySuspend()
 {
     if (!m_suspendDue || !m_displayOff || m_suspendRequested)
+        return;
+
+    // An idle inhibitor holds off sleeping for idleness, as it does logind's own idle
+    // action, but not a closed lid; the suspend is tried again when the inhibitors change.
+    if (!m_lidSleeping
+        && (listsIdle(m_logind.property<std::string>("BlockInhibited"))
+            || listsIdle(m_logind.property<std::string>("BlockWeakInhibited"))))
         return;
 
     // Not interactive: with a sleep inhibitor held, logind would otherwise wait on a

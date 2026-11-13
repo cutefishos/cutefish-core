@@ -140,6 +140,17 @@ public:
         });
     }
 
+    void setBlockInhibited(const std::string &types)
+    {
+        run([this, types] {
+            blockInhibited = types;
+            m_bus->emitSignal("/org/freedesktop/login1", "org.freedesktop.DBus.Properties", "PropertiesChanged",
+                              std::string("org.freedesktop.login1.Manager"),
+                              dbus::VariantMap {{"BlockInhibited", dbus::Variant(types)}},
+                              std::vector<std::string>());
+        });
+    }
+
     void changeTopology()
     {
         run([this] {
@@ -154,6 +165,8 @@ public:
     bool lockFails = false;
     // Refuses Suspend as logind does while a sleep inhibitor is held.
     bool inhibited = false;
+    // logind's BlockInhibited: the blocked inhibitor types, colon-separated.
+    std::string blockInhibited;
     bool external = false;
     int busyAnswers = 0;
 
@@ -200,6 +213,9 @@ private:
                 call.replyError("org.freedesktop.DBus.Error.InteractiveAuthorizationRequired", "Operation inhibited");
             else
                 call.reply();
+        });
+        logind->addProperty("BlockInhibited", [this] {
+            return blockInhibited;
         });
         logind->addSignal("PrepareForSleep", "b");
         logind->publish();
@@ -535,6 +551,33 @@ TEST_F(PowerPolicyTest, AnInhibitedSleepWaitsWithoutAPrompt)
     services.releaseSleepInhibitors();
     ASSERT_TRUE(until([&] { return log().suspends == 2; }));
     EXPECT_EQ(log().interactive, (std::vector<bool> {false, false}));
+}
+
+TEST_F(PowerPolicyTest, AnIdleInhibitorKeepsTheSystemAwake)
+{
+    services.setBlockInhibited("handle-lid-switch:idle");
+    auto policy = start();
+    policy->setPolicy(60, 1);
+
+    policy->idleFor(60);
+    ASSERT_TRUE(until([&] { return log().power == std::vector<uint32_t> {1}; }));
+    testsupport::wait(loop, 1500ms);
+    EXPECT_EQ(log().suspends, 0);
+
+    services.setBlockInhibited("handle-lid-switch");
+    ASSERT_TRUE(until([&] { return log().suspends == 1; }));
+    EXPECT_EQ(log().interactive, std::vector<bool> {false});
+}
+
+TEST_F(PowerPolicyTest, AnIdleInhibitorDoesNotHoldAClosedLid)
+{
+    services.setBlockInhibited("idle");
+    auto policy = start();
+    policy->setLidPresent(true);
+    EXPECT_TRUE(until([&] { return services.holdsLidInhibitor(); }));
+
+    policy->handleLidClosed();
+    ASSERT_TRUE(until([&] { return log().suspends == 1; }));
 }
 
 TEST_F(PowerPolicyTest, AnInhibitedClosedLidIsLeftToLogind)
