@@ -222,8 +222,8 @@ void Application::initEnvironments()
     setenv("GSETTINGS_BACKEND", "keyfile", 1);
 
     // Qt
-    if (isEmptyVariable("WAYLAND_DISPLAY"))
-        setenv("WAYLAND_DISPLAY", "cutefish-0", 1);
+    // WAYLAND_DISPLAY: the compositor picks a wayland-N socket of its own
+    // unless one is preset (ProcessManager::start).
     setenv("QT_QPA_PLATFORMTHEME", "cutefish", 1);
 
     // ref:

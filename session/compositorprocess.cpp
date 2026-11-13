@@ -57,14 +57,20 @@ void CompositorProcess::fail(const std::string& reason)
 
 void CompositorProcess::readReady()
 {
-    char marker = 0;
-    const auto count = read(m_readFd, &marker, 1);
+    // "R" and the socket name, written at once.
+    char buffer[256];
+    const auto count = read(m_readFd, buffer, sizeof(buffer));
     if (count < 0)
         return;
-    if (count != 1 || marker != 'R') {
+    if (count < 1 || buffer[0] != 'R') {
         fail("Compositor did not confirm startup");
         return;
     }
+    std::string socket(buffer + 1, size_t(count - 1));
+    if (!socket.empty() && socket.back() == '\n')
+        socket.pop_back();
+    if (!socket.empty())
+        m_socket = socket;
     closeReadyPipe();
     m_ready = true;
     if (onReady)
@@ -88,8 +94,14 @@ void CompositorProcess::start(const std::string& program, const std::string& soc
     m_readFd = fds[0];
     const int writeFd = fds[1];
     // The write end is the compositor's only inherited descriptor.
-    std::vector<std::string> arguments{"--socket", socket, "--ready-fd",
-                                       std::to_string(cutefish::base::Process::kInheritedFd)};
+    // With no socket named the compositor picks the first free wayland-N and
+    // reports it with its readiness.
+    m_socket = socket;
+    std::vector<std::string> arguments;
+    if (!socket.empty())
+        arguments = {"--socket", socket};
+    arguments.push_back("--ready-fd");
+    arguments.push_back(std::to_string(cutefish::base::Process::kInheritedFd));
     if (!controlSocket.empty()) {
         arguments.push_back("--shell-control-socket");
         arguments.push_back(controlSocket);
