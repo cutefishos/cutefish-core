@@ -36,7 +36,9 @@ public:
     std::string languageCode() const;
     void setLanguage(const std::string &code);
     std::vector<std::string> preferredLanguages() const;
-    void setPreferredLanguages(const std::vector<std::string> &codes);
+    // A new primary language posts a notice that applications may need a
+    // restart, unless `notify` is off, as for a program that relabels itself.
+    void setPreferredLanguages(const std::vector<std::string> &codes, bool notify = true);
 
     // The region chosen in [Region], else the system's, such as "SG".
     std::string region() const;

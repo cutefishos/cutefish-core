@@ -56,6 +56,9 @@ bool Language::publish()
     m_object->addMethod("setPreferredLanguages",
                         [this](const std::vector<std::string> &value) { setPreferredLanguages(value); },
                         {{"value"}, {}});
+    m_object->addMethod("setPreferredLanguagesQuietly",
+                        [this](const std::vector<std::string> &value) { setPreferredLanguages(value, false); },
+                        {{"value"}, {}});
     m_object->addMethod("setRegion", [this](const std::string &value) { setRegion(value); }, {{"value"}, {}});
     m_object->addMethod("setFirstWeekday", [this](int32_t value) { setFirstWeekday(value); }, {{"value"}, {}});
     m_object->addMethod("setMeasurementSystem", [this](const std::string &value) { setMeasurementSystem(value); },
@@ -130,7 +133,7 @@ std::string Language::localeName(const std::string &code)
     return *country ? std::string(languageCode) + '_' + country : std::string(languageCode);
 }
 
-void Language::setPreferredLanguages(const std::vector<std::string> &languages)
+void Language::setPreferredLanguages(const std::vector<std::string> &languages, bool notify)
 {
     std::vector<std::string> codes = languages;
     removeAll(codes, std::string());
@@ -151,7 +154,7 @@ void Language::setPreferredLanguages(const std::vector<std::string> &languages)
     publishEnvironment();
     prepareLocale();
 
-    if (!primaryChanged)
+    if (!primaryChanged || !notify)
         return;
 
     m_notification = std::make_unique<Notification>(m_session);

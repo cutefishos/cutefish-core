@@ -91,6 +91,14 @@ TEST(LanguageServiceTest, NotificationsOnlyForPrimaryChanges)
     testsupport::wait(loop, 30ms);
     EXPECT_EQ(notifications.count, 2);
 
+    // A program that relabels itself, such as the installer, asks for no notice.
+    language.setPreferredLanguages({"fr_FR"}, false);
+    testsupport::wait(loop, 30ms);
+    EXPECT_EQ(notifications.count, 2);
+    EXPECT_EQ(language.languageCode(), "fr_FR");
+    language.setPreferredLanguages({"de_DE"});
+    EXPECT_TRUE(testsupport::waitFor(loop, [&] { return notifications.count == 3; }));
+
     // Kept where the session reads it.
     Settings saved(directory.path() + "/services.conf");
     EXPECT_EQ(saved.stringValue("Language/language"), "de_DE");
