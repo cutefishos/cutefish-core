@@ -57,6 +57,37 @@ TEST(LanguageEnvironment, portugueseFallsBackToBrazilianCatalogs)
     EXPECT_EQ(others["LANGUAGE"], "es_MX:fr_CA:de_AT");
 }
 
+TEST(LanguageEnvironment, chineseFallsBackToTheCatalogOfItsScript)
+{
+    Environment taiwan;
+    language::apply(taiwan, {"zh_Hant_TW"});
+    EXPECT_EQ(taiwan["LANGUAGE"], "zh_TW");
+
+    Environment hongKong;
+    language::apply(hongKong, {"zh_Hant_HK"});
+    EXPECT_EQ(hongKong["LANGUAGE"], "zh_HK:zh_TW");
+
+    Environment macau;
+    language::apply(macau, {"zh_Hant_MO"});
+    EXPECT_EQ(macau["LANGUAGE"], "zh_MO:zh_TW");
+
+    Environment china;
+    language::apply(china, {"zh_Hans_CN"});
+    EXPECT_EQ(china["LANGUAGE"], "zh_CN");
+
+    Environment bare;
+    language::apply(bare, {"zh"});
+    EXPECT_EQ(bare["LANGUAGE"], "zh_CN");
+
+    Environment singapore;
+    language::apply(singapore, {"zh_Hans_SG", "en_US"});
+    EXPECT_EQ(singapore["LANGUAGE"], "zh_SG:zh_CN:en_US");
+
+    Environment malaysia;
+    language::apply(malaysia, {"zh_Hans_MY"});
+    EXPECT_EQ(malaysia["LANGUAGE"], "zh_MY:zh_CN");
+}
+
 TEST(LanguageEnvironment, regionsNameTheirFormatsLocale)
 {
     EXPECT_EQ(language::formatsLocale("zh_Hans_CN", "SG"), "zh_SG.UTF-8");

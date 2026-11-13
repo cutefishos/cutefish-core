@@ -228,8 +228,10 @@ static const char* const kRegionalCategories[] = {"LC_TIME", "LC_NUMERIC", "LC_M
                                                   "LC_PAPER", "LC_ADDRESS", "LC_TELEPHONE", "LC_NAME"};
 
 // Languages whose catalogs are named for one territory, which gettext never
-// reaches from the language's other territories.
-static const std::pair<const char*, const char*> kTerritoryCatalogs[] = {{"pt", "pt_BR"}};
+// reaches from the language's other territories; a territory listed before
+// its language picks the catalog of its script.
+static const std::pair<const char*, const char*> kTerritoryCatalogs[] = {
+        {"pt", "pt_BR"}, {"zh_TW", "zh_TW"}, {"zh_HK", "zh_TW"}, {"zh_MO", "zh_TW"}, {"zh", "zh_CN"}};
 
 void apply(Environment& environment, const std::vector<std::string>& codes, const std::string& region)
 {
@@ -268,9 +270,13 @@ void apply(Environment& environment, const std::vector<std::string>& codes, cons
             break;
 
         const std::string family = language.substr(0, language.find_first_of("_@"));
-        for (const auto& [territoryFamily, catalog] : kTerritoryCatalogs) {
-            if (family == territoryFamily && language != catalog)
+        const std::string territory = language.substr(0, language.find('@'));
+        for (const auto& [name, catalog] : kTerritoryCatalogs) {
+            if (name != family && name != territory)
+                continue;
+            if (language != catalog)
                 messageLanguages.push_back(catalog);
+            break;
         }
     }
     removeDuplicates(messageLanguages);
