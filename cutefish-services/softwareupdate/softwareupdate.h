@@ -48,6 +48,7 @@ public:
     std::function<std::string()> bootId;
 
 private:
+    void findPackageKit();
     void start();
     void updatesChanged();
     void checkFinished(bool success);

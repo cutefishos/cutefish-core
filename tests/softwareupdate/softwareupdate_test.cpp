@@ -429,3 +429,14 @@ TEST_F(SoftwareUpdateTest, WithoutPackageKitNothingHappens)
     settle();
     EXPECT_TRUE(fakes.calls.empty());
 }
+
+TEST_F(SoftwareUpdateTest, PackageKitInstalledLaterIsFoundOnACheck)
+{
+    start(false);
+    settle();
+    EXPECT_EQ(read("state"), "unknown");
+    ASSERT_TRUE(fakes.registerPackageKit());
+    ASSERT_TRUE(call("check"));
+    ASSERT_TRUE(settlesIn("available"));
+    EXPECT_EQ(fakes.calls, (std::vector<std::string> {"GetUpdates"}));
+}

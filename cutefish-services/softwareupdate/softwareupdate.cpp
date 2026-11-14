@@ -47,16 +47,14 @@ SoftwareUpdate::SoftwareUpdate(dbus::Connection *system, dbus::Connection *sessi
 
     m_timer.setSingleShot(true);
     m_timer.onTimeout = [this] {
-        checkIfDue();
+        if (m_updates)
+            checkIfDue();
+        else
+            findPackageKit();
         m_timer.start(kCheckInterval);
     };
 
-    m_availability = std::make_unique<cutefish::packagekit::Availability>(m_system, [this](bool available) {
-        if (available)
-            start();
-        else
-            CF_INFO(services::log()) << "PackageKit is not available; software updates are off";
-    });
+    findPackageKit();
 }
 
 SoftwareUpdate::~SoftwareUpdate() = default;
@@ -76,7 +74,11 @@ bool SoftwareUpdate::publish()
     m_object->addProperty("canCancel", [this] { return m_updates && m_updates->canCancel(); });
     m_object->addProperty("error", [this] { return m_updates ? m_updates->error() : std::string(); });
     m_object->addMethod("check", [this] {
-        if (!m_updates || m_updates->isBusy())
+        if (!m_updates) {
+            findPackageKit();
+            return;
+        }
+        if (m_updates->isBusy())
             return;
         m_backgroundCheck = false;
         m_updates->check(true);
@@ -107,6 +109,21 @@ void SoftwareUpdate::checkIfDue()
         return;
     m_backgroundCheck = true;
     m_updates->checkInBackground();
+}
+
+// PackageKit can be installed while the session runs, so a missing one is
+// looked for again on every check.
+void SoftwareUpdate::findPackageKit()
+{
+    m_availability = std::make_unique<cutefish::packagekit::Availability>(m_system, [this](bool available) {
+        if (available && !m_updates) {
+            start();
+        } else if (!available) {
+            CF_INFO(services::log()) << "PackageKit is not available; software updates are off";
+            if (!m_timer.isActive())
+                m_timer.start(kCheckInterval);
+        }
+    });
 }
 
 void SoftwareUpdate::start()
