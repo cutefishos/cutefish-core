@@ -18,6 +18,9 @@ public:
     void stop();
 
     bool isReady() const { return m_ready; }
+    // The Wayland socket the compositor listens on: the one it was given,
+    // or once ready the one it picked.
+    const std::string& socketName() const { return m_socket; }
 
     std::function<void()> onReady;
     std::function<void(const std::string& reason)> onFailed;
@@ -32,6 +35,7 @@ private:
     int m_readFd = -1;
     int m_readWatch = 0;
     bool m_ready = false;
+    std::string m_socket;
     bool m_stopping = false;
     bool m_failed = false;
 };

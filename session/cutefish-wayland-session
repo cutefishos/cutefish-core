@@ -4,6 +4,7 @@ export XDG_CURRENT_DESKTOP=Cutefish
 export XDG_SESSION_DESKTOP=Cutefish
 export DESKTOP_SESSION=Cutefish
 export XDG_SESSION_TYPE=wayland
-export WAYLAND_DISPLAY=cutefish-0
-unset DISPLAY XAUTHORITY WAYLAND_SOCKET
+# No WAYLAND_DISPLAY: the compositor picks a wayland-N socket and the
+# session exports it.
+unset DISPLAY XAUTHORITY WAYLAND_DISPLAY WAYLAND_SOCKET
 exec /usr/bin/cutefish-session "$@"

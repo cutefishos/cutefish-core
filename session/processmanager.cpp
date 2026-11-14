@@ -118,9 +118,11 @@ void ProcessManager::start()
         return;
     m_started = true;
 
-    m_waylandSocket = environmentValue("WAYLAND_DISPLAY", "cutefish-0");
+    // A preset socket is used as it is; otherwise the compositor picks the first
+    // free wayland-N, the name sandboxed clients such as snaps may connect to.
+    m_waylandSocket = environmentValue("WAYLAND_DISPLAY", "");
     const std::string runtimeDir = environmentValue("XDG_RUNTIME_DIR", "/tmp");
-    m_controlSocket = runtimeDir + '/' + m_waylandSocket + "-shell.control";
+    m_controlSocket = runtimeDir + "/cutefish-" + std::to_string(getpid()) + "-shell.control";
 
     unsetenv("DISPLAY");
     unsetenv("XAUTHORITY");
@@ -132,6 +134,8 @@ void ProcessManager::start()
         publishXwaylandEnvironment(false);
     };
     m_compositorProcess->onReady = [this] {
+        m_waylandSocket = m_compositorProcess->socketName();
+        setenv("WAYLAND_DISPLAY", m_waylandSocket.c_str(), 1);
         m_xwaylandEnvironment->waitForReady();
     };
     m_compositorProcess->onFailed = [this](const std::string &reason) {
@@ -179,7 +183,8 @@ void ProcessManager::publishXwaylandEnvironment(bool startDesktop)
     };
     m_publishers.push_back(std::move(publisher));
     if (!raw->process.start("dbus-update-activation-environment",
-                            {"--systemd", "DISPLAY=" + environmentValue("DISPLAY"),
+                            {"--systemd", "WAYLAND_DISPLAY=" + m_waylandSocket,
+                             "DISPLAY=" + environmentValue("DISPLAY"),
                              "XAUTHORITY=" + environmentValue("XAUTHORITY")})) {
         CF_WARNING(sessionLog()) << "dbus-update-activation-environment is unavailable";
         finish();
