@@ -1,5 +1,23 @@
 [Default Applications]
 inode/directory=cutefish-filemanager.desktop
+application/gzip=cutefish-filemanager.desktop
+application/vnd.rar=cutefish-filemanager.desktop
+application/x-7z-compressed=cutefish-filemanager.desktop
+application/x-bzip=cutefish-filemanager.desktop
+application/x-bzip-compressed-tar=cutefish-filemanager.desktop
+application/x-bzip2=cutefish-filemanager.desktop
+application/x-bzip2-compressed-tar=cutefish-filemanager.desktop
+application/x-compressed-tar=cutefish-filemanager.desktop
+application/x-lzma=cutefish-filemanager.desktop
+application/x-lzma-compressed-tar=cutefish-filemanager.desktop
+application/x-rar=cutefish-filemanager.desktop
+application/x-tar=cutefish-filemanager.desktop
+application/x-xz=cutefish-filemanager.desktop
+application/x-xz-compressed-tar=cutefish-filemanager.desktop
+application/x-zip-compressed=cutefish-filemanager.desktop
+application/x-zstd-compressed-tar=cutefish-filemanager.desktop
+application/zip=cutefish-filemanager.desktop
+application/zstd=cutefish-filemanager.desktop
 
 text/plain=cutefish-text-editor.desktop
 text/markdown=cutefish-text-editor.desktop
