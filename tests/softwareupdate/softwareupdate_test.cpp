@@ -12,6 +12,7 @@
 #include <optional>
 #include <string>
 #include <tuple>
+#include <utility>
 #include <vector>
 
 #include "base/dbus.h"
@@ -48,26 +49,13 @@ public:
     {
         m_daemon = std::make_unique<dbus::Object>(m_bus.get(), kPackageKitPath, kPackageKit);
         m_daemon->addMethod("CreateTransaction", [this] { return createTransaction(); });
+        m_daemon->addMethod("GetTransactionList", [this] {
+            std::vector<dbus::ObjectPath> paths;
+            if (!m_held.empty())
+                paths.push_back({m_held});
+            return paths;
+        });
         EXPECT_TRUE(m_daemon->publish());
-
-        m_offline = std::make_unique<dbus::Object>(m_bus.get(), kPackageKitPath, "org.freedesktop.PackageKit.Offline");
-        m_offline->addMethod("GetPrepared", [this] { return prepared; });
-        m_offline->addMethod("Trigger", [this](const std::string &action) {
-            calls.push_back("Trigger " + action);
-        });
-        m_offline->addMethod("ClearResults", [this] {
-            calls.push_back("ClearResults");
-            result.reset();
-        });
-        m_offline->addMethod("GetResults", "", "basutus", [this](dbus::MethodCall &call) {
-            if (!result) {
-                call.replyError("org.freedesktop.PackageKit.Offline.Error.NoData", "no update results available");
-                return;
-            }
-            const auto &[success, ids, error] = *result;
-            call.reply(success, ids, uint32_t(22), uint64_t(1794000000), uint32_t(success ? 0 : 4), error);
-        });
-        EXPECT_TRUE(m_offline->publish());
 
         m_notifications = std::make_unique<dbus::Object>(m_bus.get(), "/org/freedesktop/Notifications",
                                                          "org.freedesktop.Notifications");
@@ -101,16 +89,21 @@ public:
 
     void click(uint32_t id) { m_notifications->emitSignal("ActionInvoked", id, std::string("default")); }
 
+    // The update held by holdUpdate.
+    void finishUpdate()
+    {
+        const std::string path = std::exchange(m_held, std::string());
+        updates.clear();
+        m_objects[path]->emitSignal("Finished", uint32_t(1), uint32_t(10));
+    }
+
     std::vector<PackageEntry> updates = {
         {5, "tzdata;2026f-0+deb13u1;all;debian-stable-updates", "time zone and daylight-saving time data"},
         {8, "openssl;3.5.4-1~deb13u2;amd64;debian-security", "Secure Sockets Layer toolkit"},
     };
-    std::vector<std::string> prepared;
     bool failRefresh = false;
-    // Leaves a download running until it is cancelled.
-    bool holdDownload = false;
-    // Success, the package ids and the error of the last offline update.
-    std::optional<std::tuple<bool, std::vector<std::string>, std::string>> result;
+    // Leaves an update running until finishUpdate() or Cancel.
+    bool holdUpdate = false;
 
     // PackageKit's methods and the session's reboot, in order.
     std::vector<std::string> calls;
@@ -122,13 +115,21 @@ private:
         const std::string path = "/" + std::to_string(++m_transactions) + "_test";
         auto object = std::make_unique<dbus::Object>(m_bus.get(), path, "org.freedesktop.PackageKit.Transaction");
         dbus::Object *transaction = object.get();
+        object->addProperty("Role", [] { return uint32_t(22); });
+        object->addProperty("TransactionFlags", [] { return uint64_t(1) << 1; });
+        object->addProperty("Status", [] { return uint32_t(8); });
+        object->addProperty("Percentage", [] { return uint32_t(30); });
+        object->addProperty("AllowCancel", [] { return true; });
         object->addSignal("Packages", "a(uss)");
         object->addSignal("ErrorCode", "us");
         object->addSignal("Finished", "uu");
         object->addMethod("SetHints", [](const std::vector<std::string> &) {});
-        object->addMethod("Cancel", [this, transaction] {
+        object->addMethod("Cancel", [this, transaction, path] {
             calls.push_back("Cancel");
-            transaction->emitSignal("Finished", uint32_t(3), uint32_t(10));
+            if (path == m_held) {
+                m_held.clear();
+                transaction->emitSignal("Finished", uint32_t(3), uint32_t(10));
+            }
         });
         object->addMethod("RefreshCache", [this, transaction](bool) {
             calls.push_back("RefreshCache");
@@ -141,25 +142,27 @@ private:
             transaction->emitSignal("Packages", updates);
             transaction->emitSignal("Finished", uint32_t(1), uint32_t(10));
         });
-        object->addMethod("UpdatePackages", [this, transaction](uint64_t, const std::vector<std::string> &ids) {
+        object->addMethod("UpdatePackages", [this, path](uint64_t, const std::vector<std::string> &) {
             calls.push_back("UpdatePackages");
-            if (holdDownload)
-                return;
-            prepared = ids;
-            transaction->emitSignal("Finished", uint32_t(1), uint32_t(10));
+            m_held = path;
+            heldObject()->emitPropertiesChanged({"Status", "Percentage", "AllowCancel"});
+            if (!holdUpdate)
+                finishUpdate();
         });
         EXPECT_TRUE(object->publish());
-        m_transactionObjects[path] = std::move(object);
+        m_objects[path] = std::move(object);
         return {path};
     }
 
+    dbus::Object *heldObject() { return m_objects[m_held].get(); }
+
     std::unique_ptr<dbus::Connection> m_bus;
     std::unique_ptr<dbus::Object> m_daemon;
-    std::unique_ptr<dbus::Object> m_offline;
     std::unique_ptr<dbus::Object> m_notifications;
     std::unique_ptr<dbus::Object> m_session;
-    std::map<std::string, std::unique_ptr<dbus::Object>> m_transactionObjects;
+    std::map<std::string, std::unique_ptr<dbus::Object>> m_objects;
     int m_transactions = 0;
+    std::string m_held;
 };
 
 class SoftwareUpdateTest : public testing::Test
@@ -184,9 +187,12 @@ protected:
     {
         if (withPackageKit)
             ASSERT_TRUE(fakes.registerPackageKit());
+        service.reset();
+        m_properties.clear();
         service = std::make_unique<SoftwareUpdate>(dbus::Connection::session(), dbus::Connection::session(),
                                                    *settings);
         service->openSettings = [this] { ++settingsOpened; };
+        service->bootId = [this] { return boot; };
         ASSERT_TRUE(service->publish());
         m_proxy = dbus::Proxy(dbus::Connection::session(), dbus::Connection::session()->uniqueName(),
                               "/org/cutefish/Services/SoftwareUpdate", "org.cutefish.Services.SoftwareUpdate");
@@ -209,11 +215,10 @@ protected:
         return value ? value->get<Entries>().value_or(Entries()).size() : 0;
     }
 
-    // As the last PropertiesChanged had them.
-    std::string state() { return announced("state"); }
-    std::string announced(const std::string &name)
+    // As the last PropertiesChanged had it.
+    std::string state()
     {
-        const auto it = m_properties.find(name);
+        const auto it = m_properties.find("state");
         return it == m_properties.end() ? std::string() : it->second.value<std::string>();
     }
 
@@ -241,12 +246,20 @@ protected:
         return testsupport::waitFor(loop, [&] { return state() == expected; });
     }
 
+    bool called(const std::string &method)
+    {
+        return testsupport::waitFor(loop, [&] {
+            return std::find(fakes.calls.begin(), fakes.calls.end(), method) != fakes.calls.end();
+        });
+    }
+
     void settle() { testsupport::wait(loop, 150ms); }
 
     EventLoop loop;
     Fakes fakes;
     std::unique_ptr<Settings> settings;
     std::unique_ptr<SoftwareUpdate> service;
+    std::string boot = "boot-a";
     int settingsOpened = 0;
 
 private:
@@ -324,66 +337,70 @@ TEST_F(SoftwareUpdateTest, AFailedBackgroundCheckStaysQuiet)
     EXPECT_FALSE(settings->contains("SoftwareUpdate/LastCheck"));
 }
 
-TEST_F(SoftwareUpdateTest, ReadyStaysReadyWhenABackgroundCheckFails)
+TEST_F(SoftwareUpdateTest, AnInstallSuggestsARestart)
 {
-    fakes.prepared = {"tzdata;2026f-0+deb13u1;all;debian-stable-updates",
-                      "openssl;3.5.4-1~deb13u2;amd64;debian-security"};
-    fakes.failRefresh = true;
     start();
-    ASSERT_TRUE(settlesIn("ready"));
-    service->checkIfDue();
-    ASSERT_TRUE(testsupport::waitFor(loop, [&] { return fakes.calls.size() == 2; }));
-    settle();
-    EXPECT_EQ(fakes.calls, (std::vector<std::string> {"GetUpdates", "RefreshCache"}));
-    EXPECT_EQ(read("state"), "ready");
-    EXPECT_EQ(updateCount(), 2u);
-    EXPECT_TRUE(fakes.notices.empty());
-    EXPECT_FALSE(settings->contains("SoftwareUpdate/LastCheck"));
-
-    // The next hourly poll tries again.
-    fakes.failRefresh = false;
-    service->checkIfDue();
+    ASSERT_TRUE(settlesIn("available"));
+    ASSERT_TRUE(call("update"));
+    ASSERT_TRUE(settlesIn("restart"));
+    EXPECT_EQ(fakes.calls, (std::vector<std::string> {"GetUpdates", "UpdatePackages", "GetUpdates"}));
+    EXPECT_EQ(settings->stringValue("SoftwareUpdate/RestartBoot"), "boot-a");
     ASSERT_TRUE(testsupport::waitFor(loop, [&] { return fakes.notices.size() == 1; }));
-    EXPECT_EQ(fakes.notices[0].summary, "Updates Ready to Install");
-    EXPECT_EQ(read("state"), "ready");
-    EXPECT_TRUE(settings->contains("SoftwareUpdate/LastCheck"));
+    EXPECT_EQ(fakes.notices[0].summary, "Updates Installed");
+    EXPECT_EQ(fakes.notices[0].body, "Restart the computer to finish installing them.");
+    EXPECT_EQ(fakes.notices[0].actions, (std::vector<std::string> {"default", ""}));
+
+    ASSERT_TRUE(call("restart"));
+    ASSERT_TRUE(called("reboot"));
 }
 
-TEST_F(SoftwareUpdateTest, SettingsDownloadsAndRestarts)
+TEST_F(SoftwareUpdateTest, TheSuggestionLastsUntilTheNextBoot)
 {
+    fakes.updates.clear();
+    settings->setValue("SoftwareUpdate/RestartBoot", std::string("boot-a"));
     start();
-    ASSERT_TRUE(settlesIn("available"));
+    ASSERT_TRUE(settlesIn("restart"));
 
-    // Nothing to install yet.
-    std::optional<dbus::Reply> reply = call("restartAndUpdate");
-    ASSERT_TRUE(reply);
-    EXPECT_TRUE(reply->isError());
-
-    ASSERT_TRUE(call("download"));
-    ASSERT_TRUE(settlesIn("ready"));
-    EXPECT_EQ(fakes.prepared.size(), 2u);
-
-    reply = call("restartAndUpdate");
-    ASSERT_TRUE(reply);
-    EXPECT_FALSE(reply->isError());
-    ASSERT_TRUE(testsupport::waitFor(loop, [&] { return fakes.calls.back() == "reboot"; }));
-    EXPECT_EQ(fakes.calls, (std::vector<std::string> {"GetUpdates", "UpdatePackages", "Trigger reboot", "reboot"}));
+    // Another start in the same boot still suggests it; the next boot does not.
+    start();
+    ASSERT_TRUE(settlesIn("restart"));
+    boot = "boot-b";
+    start();
+    ASSERT_TRUE(settlesIn("up-to-date"));
 }
 
-TEST_F(SoftwareUpdateTest, SettingsStopsADownload)
+TEST_F(SoftwareUpdateTest, SettingsStopsAnUpdate)
 {
-    fakes.holdDownload = true;
+    fakes.holdUpdate = true;
     start();
     ASSERT_TRUE(settlesIn("available"));
-    ASSERT_TRUE(call("download"));
-    ASSERT_TRUE(settlesIn("downloading"));
-    ASSERT_TRUE(testsupport::waitFor(loop, [&] { return fakes.calls.size() == 2; }));
+    ASSERT_TRUE(call("update"));
+    ASSERT_TRUE(settlesIn("updating"));
+    ASSERT_TRUE(called("UpdatePackages"));
     ASSERT_TRUE(call("cancel"));
     ASSERT_TRUE(settlesIn("available"));
     EXPECT_EQ(fakes.calls, (std::vector<std::string> {"GetUpdates", "UpdatePackages", "Cancel"}));
     EXPECT_EQ(read("error"), "");
     EXPECT_EQ(updateCount(), 2u);
-    EXPECT_TRUE(fakes.prepared.empty());
+    EXPECT_FALSE(settings->contains("SoftwareUpdate/RestartBoot"));
+}
+
+TEST_F(SoftwareUpdateTest, ARestartedServiceFollowsTheRunningUpdate)
+{
+    fakes.holdUpdate = true;
+    start();
+    ASSERT_TRUE(settlesIn("available"));
+    ASSERT_TRUE(call("update"));
+    ASSERT_TRUE(called("UpdatePackages"));
+
+    // The update goes on in PackageKit while the service is replaced.
+    start();
+    ASSERT_TRUE(settlesIn("updating"));
+    EXPECT_EQ(read("phase"), "downloading");
+    fakes.finishUpdate();
+    ASSERT_TRUE(settlesIn("restart"));
+    ASSERT_TRUE(testsupport::waitFor(loop, [&] { return fakes.notices.size() == 1; }));
+    EXPECT_EQ(fakes.notices[0].summary, "Updates Installed");
 }
 
 TEST_F(SoftwareUpdateTest, ACheckFromSettingsDoesNotNotify)
@@ -396,29 +413,6 @@ TEST_F(SoftwareUpdateTest, ACheckFromSettingsDoesNotNotify)
     settle();
     EXPECT_TRUE(fakes.notices.empty());
     EXPECT_TRUE(settings->contains("SoftwareUpdate/LastCheck"));
-}
-
-TEST_F(SoftwareUpdateTest, ReportsAnInstallOnce)
-{
-    fakes.result = std::make_tuple(true, std::vector<std::string> {"a;1;all;installed", "b;2;all;installed"},
-                                   std::string());
-    start();
-    ASSERT_TRUE(testsupport::waitFor(loop, [&] { return fakes.notices.size() == 1; }));
-    EXPECT_EQ(fakes.notices[0].summary, "Updates Installed");
-    EXPECT_EQ(fakes.notices[0].body, "2 updates were installed.");
-    ASSERT_TRUE(testsupport::waitFor(loop, [&] {
-        return std::find(fakes.calls.begin(), fakes.calls.end(), "ClearResults") != fakes.calls.end();
-    }));
-    EXPECT_FALSE(fakes.result);
-}
-
-TEST_F(SoftwareUpdateTest, ReportsAFailedInstall)
-{
-    fakes.result = std::make_tuple(false, std::vector<std::string>(), std::string("dpkg returned an error code (1)"));
-    start();
-    ASSERT_TRUE(testsupport::waitFor(loop, [&] { return fakes.notices.size() == 1; }));
-    EXPECT_EQ(fakes.notices[0].summary, "Updates Not Installed");
-    EXPECT_EQ(fakes.notices[0].body, "The updates could not be installed: dpkg returned an error code (1)");
 }
 
 TEST_F(SoftwareUpdateTest, WithoutPackageKitNothingHappens)

@@ -2,20 +2,25 @@
     "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
 <node>
   <interface name="org.cutefish.Services.SoftwareUpdate">
-    <!-- unknown, checking, up-to-date, available, downloading, ready or error. -->
+    <!-- unknown, checking, up-to-date, available, updating, restart (installed
+         in this boot; a restart finishes them) or error. -->
     <property name="state" type="s" access="read"/>
     <!-- Name, new version and summary of each pending update. -->
     <property name="updates" type="a(sss)" access="read"/>
-    <!-- While downloading: 0 to 100, or -1 while unknown. -->
+    <!-- While updating: downloading or installing. -->
+    <property name="phase" type="s" access="read"/>
+    <!-- While updating: 0 to 100, or -1 while unknown. -->
     <property name="progress" type="i" access="read"/>
+    <!-- While updating: whether cancel can still stop it. -->
+    <property name="canCancel" type="b" access="read"/>
     <!-- In the error state: the package manager's message, which may be empty. -->
     <property name="error" type="s" access="read"/>
 
     <method name="check"/>
-    <method name="download"/>
-    <!-- Stops a download; the updates are available again. -->
+    <!-- Downloads and installs every pending update now. -->
+    <method name="update"/>
     <method name="cancel"/>
-    <!-- Sets the downloaded updates to install at the next boot and restarts. -->
-    <method name="restartAndUpdate"/>
+    <!-- Restarts the computer through the session. -->
+    <method name="restart"/>
   </interface>
 </node>
