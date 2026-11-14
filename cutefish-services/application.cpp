@@ -15,6 +15,7 @@
 #include "idle/waylandidle.h"
 #include "power/powermanager.h"
 #include "proxy/proxyservice.h"
+#include "softwareupdate/softwareupdate.h"
 
 #include "base/dbus.h"
 #include "base/paths.h"
@@ -69,6 +70,7 @@ Application::Application()
     m_permissionManager = std::make_unique<PermissionManager>(m_session);
     m_crashManager = std::make_unique<CrashManager>([this] { return m_themeManager->systemFixedFont(); });
     m_proxyService = std::make_unique<ProxyService>(m_session);
+    m_softwareUpdate = std::make_unique<SoftwareUpdate>(m_system, m_session, m_settings);
 
     initTrash();
 
@@ -89,6 +91,7 @@ Application::Application()
     published(m_powerManager->publish(), "Power");
     published(m_nightLight->publish(m_session), "NightLight");
     published(m_permissionManager->publish(), "Permissions");
+    published(m_softwareUpdate->publish(), "SoftwareUpdate");
 
     if (!m_session || !m_session->requestName("org.cutefish.Services"))
         CF_WARNING(services::log()) << "Cannot own org.cutefish.Services";

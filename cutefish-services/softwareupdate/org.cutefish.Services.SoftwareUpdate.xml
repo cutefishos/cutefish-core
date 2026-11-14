@@ -1,0 +1,21 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+    "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="org.cutefish.Services.SoftwareUpdate">
+    <!-- unknown, checking, up-to-date, available, downloading, ready or error. -->
+    <property name="state" type="s" access="read"/>
+    <!-- Name, new version and summary of each pending update. -->
+    <property name="updates" type="a(sss)" access="read"/>
+    <!-- While downloading: 0 to 100, or -1 while unknown. -->
+    <property name="progress" type="i" access="read"/>
+    <!-- In the error state: the package manager's message, which may be empty. -->
+    <property name="error" type="s" access="read"/>
+
+    <method name="check"/>
+    <method name="download"/>
+    <!-- Stops a download; the updates are available again. -->
+    <method name="cancel"/>
+    <!-- Sets the downloaded updates to install at the next boot and restarts. -->
+    <method name="restartAndUpdate"/>
+  </interface>
+</node>

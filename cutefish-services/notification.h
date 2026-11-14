@@ -35,6 +35,8 @@ public:
     void setUrgency(Urgency urgency) { m_urgency = urgency; }
     // Notify's expire_timeout; -1 leaves it to the server.
     void setTimeout(int timeout) { m_timeout = timeout; }
+    // Clicking it then emits activated.
+    void setActivatable(bool activatable) { m_activatable = activatable; }
 
     void show();
     void close();
@@ -43,6 +45,8 @@ public:
     cutefish::base::Signal<> closed;
     // No server took it, as early in a session.
     cutefish::base::Signal<> failed;
+    // The user clicked it.
+    cutefish::base::Signal<> activated;
 
 private:
     void send();
@@ -51,6 +55,7 @@ private:
     cutefish::base::dbus::Connection *m_bus;
     cutefish::base::dbus::Proxy m_proxy;
     cutefish::base::dbus::Match m_closedMatch;
+    cutefish::base::dbus::Match m_actionMatch;
     cutefish::base::dbus::PendingCall m_call;
     std::string m_desktopEntry;
     std::string m_iconName;
@@ -58,6 +63,7 @@ private:
     std::string m_body;
     Urgency m_urgency = Normal;
     int m_timeout = -1;
+    bool m_activatable = false;
     uint32_t m_id = 0;
     bool m_pending = false;
     bool m_showAgain = false;

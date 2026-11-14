@@ -60,6 +60,14 @@ void Notification::send()
             closed.emit();
         });
     }
+    if (m_activatable && m_actionMatch.isNull()) {
+        m_actionMatch = m_proxy.onSignal("ActionInvoked", [this](const dbus::Message &message) {
+            uint32_t id = 0;
+            std::string key;
+            if (message.read(id, key) && id != 0 && id == m_id && key == "default")
+                activated.emit();
+        });
+    }
 
     dbus::VariantMap hints {{"urgency", dbus::Variant(uint8_t(m_urgency))}};
     if (!m_desktopEntry.empty())
@@ -68,8 +76,9 @@ void Notification::send()
     dbus::Message call = m_bus->newMethodCall(kService, kPath, kService, "Notify");
     // Only a running notification server shows it; none is started for it.
     sd_bus_message_set_auto_start(call.get(), 0);
-    call.append(std::string(), m_id, m_iconName, m_summary, m_body, std::vector<std::string>(), hints,
-                int32_t(m_timeout));
+    const std::vector<std::string> actions = m_activatable ? std::vector<std::string> {"default", ""}
+                                                           : std::vector<std::string>();
+    call.append(std::string(), m_id, m_iconName, m_summary, m_body, actions, hints, int32_t(m_timeout));
 
     m_pending = true;
     m_call = m_bus->callAsync(call, [this](const dbus::Reply &reply) {

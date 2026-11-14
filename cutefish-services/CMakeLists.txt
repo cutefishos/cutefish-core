@@ -2,7 +2,7 @@ project(cutefish-services)
 set(TARGET cutefish-services)
 
 find_package(CutefishToolkit REQUIRED)
-find_package(CutefishClients REQUIRED COMPONENTS display powerprofiles)
+find_package(CutefishClients REQUIRED COMPONENTS display packagekit powerprofiles)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(ServicesSystemd REQUIRED IMPORTED_TARGET libsystemd)
 pkg_check_modules(ServicesFontconfig REQUIRED IMPORTED_TARGET fontconfig)
@@ -70,6 +70,8 @@ add_executable(${TARGET}
     schedule/scheduledfeature.h
     schedule/scheduleutils.cpp
     schedule/scheduleutils.h
+    softwareupdate/softwareupdate.cpp
+    softwareupdate/softwareupdate.h
 )
 target_include_directories(${TARGET} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -85,6 +87,7 @@ target_compile_definitions(${TARGET} PRIVATE
 target_link_libraries(${TARGET} PRIVATE
         Cutefish::Toolkit
         Cutefish::DisplayClient
+        Cutefish::PackageKitClient
         Cutefish::PowerProfilesClient
         cutefish-core-common
         cutefish-clipboard-backend

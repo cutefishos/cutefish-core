@@ -19,6 +19,7 @@ class PermissionManager;
 class PowerManager;
 class PowerSupply;
 class ProxyService;
+class SoftwareUpdate;
 class ThemeManager;
 class WaylandIdle;
 
@@ -58,6 +59,7 @@ private:
     std::unique_ptr<PermissionManager> m_permissionManager;
     std::unique_ptr<CrashManager> m_crashManager;
     std::unique_ptr<ProxyService> m_proxyService;
+    std::unique_ptr<SoftwareUpdate> m_softwareUpdate;
     cutefish::base::Subscription m_themeChanged;
 };
 
