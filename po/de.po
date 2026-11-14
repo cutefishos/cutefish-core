@@ -198,8 +198,8 @@ msgid "Let “{name}” control this computer?"
 msgstr "Soll „{name}“ diesen Computer steuern dürfen?"
 
 #: cutefish-services/permissions/permissionprompt.cpp
-msgid "It will see your screen and use the pointer and keyboard until you stop it with the Stop button in the status bar. Using the pointer or keyboard yourself pauses it, and it cannot answer system dialogs like this one."
-msgstr "Die App sieht Ihren Bildschirm und verwendet Zeiger und Tastatur, bis Sie sie mit der Stopptaste in der Statusleiste anhalten. Wenn Sie selbst Zeiger oder Tastatur verwenden, pausiert die App. Systemdialoge wie diesen kann sie nicht beantworten."
+msgid "It will see your screen and use the pointer and keyboard until you stop it with the Stop button in the menu bar. Using the pointer or keyboard yourself pauses it, and it cannot answer system dialogs like this one."
+msgstr "Die App sieht Ihren Bildschirm und verwendet Zeiger und Tastatur, bis Sie sie mit der Stopptaste in der Menüleiste anhalten. Wenn Sie selbst Zeiger oder Tastatur verwenden, pausiert die App. Systemdialoge wie diesen kann sie nicht beantworten."
 
 #: cutefish-services/permissions/permissionprompt.cpp
 msgid "Allow"

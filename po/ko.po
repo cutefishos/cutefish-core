@@ -198,8 +198,8 @@ msgid "Let “{name}” control this computer?"
 msgstr "“{name}” 앱이 이 컴퓨터를 제어하도록 허용하겠습니까?"
 
 #: cutefish-services/permissions/permissionprompt.cpp
-msgid "It will see your screen and use the pointer and keyboard until you stop it with the Stop button in the status bar. Using the pointer or keyboard yourself pauses it, and it cannot answer system dialogs like this one."
-msgstr "상태 막대의 중단 버튼으로 멈출 때까지 화면을 보고 포인터와 키보드를 사용합니다. 직접 포인터나 키보드를 사용하면 일시 정지되며, 이와 같은 시스템 대화상자에는 응답할 수 없습니다."
+msgid "It will see your screen and use the pointer and keyboard until you stop it with the Stop button in the menu bar. Using the pointer or keyboard yourself pauses it, and it cannot answer system dialogs like this one."
+msgstr "메뉴 막대의 중단 버튼으로 멈출 때까지 화면을 보고 포인터와 키보드를 사용합니다. 직접 포인터나 키보드를 사용하면 일시 정지되며, 이와 같은 시스템 대화상자에는 응답할 수 없습니다."
 
 #: cutefish-services/permissions/permissionprompt.cpp
 msgid "Allow"

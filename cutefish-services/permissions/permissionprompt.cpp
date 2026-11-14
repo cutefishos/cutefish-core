@@ -422,7 +422,7 @@ public:
 
     std::string description() const override
     {
-        return tr("It will see your screen and use the pointer and keyboard until you stop it with the Stop button in the status bar. Using the pointer or keyboard yourself pauses it, and it cannot answer system dialogs like this one.");
+        return tr("It will see your screen and use the pointer and keyboard until you stop it with the Stop button in the menu bar. Using the pointer or keyboard yourself pauses it, and it cannot answer system dialogs like this one.");
     }
 
     std::string accept() const override { return tr("Allow"); }
