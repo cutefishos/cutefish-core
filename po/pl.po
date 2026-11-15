@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cutefish-core\n"
 "Report-Msgid-Bugs-To: https://github.com/cutefishos\n"
-"POT-Creation-Date: 2026-10-20 09:33+0800\n"
+"POT-Creation-Date: 2026-11-15 10:33+0800\n"
 "PO-Revision-Date: 2026-10-20 09:33+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -208,6 +208,26 @@ msgstr "Zezwól"
 #: cutefish-services/permissions/permissionprompt.cpp
 msgid "Cancel"
 msgstr "Anuluj"
+
+#: cutefish-services/softwareupdate/softwareupdate.cpp
+msgid "Updates Installed"
+msgstr "Zainstalowano aktualizacje"
+
+#: cutefish-services/softwareupdate/softwareupdate.cpp
+msgid "Restart the computer to finish installing them."
+msgstr "Uruchom ponownie komputer, aby dokończyć ich instalację."
+
+#: cutefish-services/softwareupdate/softwareupdate.cpp
+msgid "Software Updates Available"
+msgstr "Dostępne są aktualizacje oprogramowania"
+
+#: cutefish-services/softwareupdate/softwareupdate.cpp
+#, python-brace-format
+msgid "{n} update is available for this computer."
+msgid_plural "{n} updates are available for this computer."
+msgstr[0] "Dla tego komputera dostępna jest {n} aktualizacja."
+msgstr[1] "Dla tego komputera dostępne są {n} aktualizacje."
+msgstr[2] "Dla tego komputera dostępnych jest {n} aktualizacji."
 
 #: session/processmanager.cpp
 msgid "Log out cancelled"

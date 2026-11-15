@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cutefish-core\n"
 "Report-Msgid-Bugs-To: https://github.com/cutefishos\n"
-"POT-Creation-Date: 2026-10-20 09:33+0800\n"
+"POT-Creation-Date: 2026-11-15 10:33+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -11,6 +11,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: cutefish-services/battery/battery.cpp
 msgid "Calculating…"
@@ -208,6 +209,25 @@ msgstr ""
 #: cutefish-services/permissions/permissionprompt.cpp
 msgid "Cancel"
 msgstr ""
+
+#: cutefish-services/softwareupdate/softwareupdate.cpp
+msgid "Updates Installed"
+msgstr ""
+
+#: cutefish-services/softwareupdate/softwareupdate.cpp
+msgid "Restart the computer to finish installing them."
+msgstr ""
+
+#: cutefish-services/softwareupdate/softwareupdate.cpp
+msgid "Software Updates Available"
+msgstr ""
+
+#: cutefish-services/softwareupdate/softwareupdate.cpp
+#, python-brace-format
+msgid "{n} update is available for this computer."
+msgid_plural "{n} updates are available for this computer."
+msgstr[0] ""
+msgstr[1] ""
 
 #: session/processmanager.cpp
 msgid "Log out cancelled"
