@@ -69,7 +69,7 @@ TEST(LanguageEnvironment, chineseFallsBackToTheCatalogOfItsScript)
 
     Environment macau;
     language::apply(macau, {"zh_Hant_MO"});
-    EXPECT_EQ(macau["LANGUAGE"], "zh_MO:zh_TW");
+    EXPECT_EQ(macau["LANGUAGE"], "zh_MO:zh_HK");
 
     Environment china;
     language::apply(china, {"zh_Hans_CN"});

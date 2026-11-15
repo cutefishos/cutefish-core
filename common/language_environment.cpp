@@ -231,7 +231,7 @@ static const char* const kRegionalCategories[] = {"LC_TIME", "LC_NUMERIC", "LC_M
 // reaches from the language's other territories; a territory listed before
 // its language picks the catalog of its script.
 static const std::pair<const char*, const char*> kTerritoryCatalogs[] = {
-        {"pt", "pt_BR"}, {"zh_TW", "zh_TW"}, {"zh_HK", "zh_TW"}, {"zh_MO", "zh_TW"}, {"zh", "zh_CN"}};
+        {"pt", "pt_BR"}, {"zh_TW", "zh_TW"}, {"zh_HK", "zh_TW"}, {"zh_MO", "zh_HK"}, {"zh", "zh_CN"}};
 
 void apply(Environment& environment, const std::vector<std::string>& codes, const std::string& region)
 {
