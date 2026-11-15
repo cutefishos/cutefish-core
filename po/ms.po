@@ -1,0 +1,252 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: cutefish-core\n"
+"Report-Msgid-Bugs-To: https://github.com/cutefishos\n"
+"POT-Creation-Date: 2026-10-20 09:33+0800\n"
+"PO-Revision-Date: 2026-10-20 09:33+0800\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ms\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Calculating…"
+msgstr "Mengira…"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} until fully charged"
+msgstr "{time} sehingga dicas penuh"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} remaining"
+msgstr "{time} lagi"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Fully charged."
+msgstr "Dicas penuh."
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "Charging paused at {percent}%"
+msgstr "Pengecasan dijeda pada {percent}%"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Not charging"
+msgstr "Tidak mengecas"
+
+#. TRANSLATORS: days in a short battery time such as "1d 2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}d"
+msgstr "{n}hr"
+
+#. TRANSLATORS: hours in a short battery time such as "2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}h"
+msgstr "{n}j"
+
+#. TRANSLATORS: minutes in a short battery time such as "2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}m"
+msgstr "{n}m"
+
+#. TRANSLATORS: when the battery was last fully charged, under a minute ago.
+#: cutefish-services/battery/battery.cpp
+msgid "now"
+msgstr "baru sahaja"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} ago"
+msgstr "{time} yang lalu"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Low Battery"
+msgstr "Bateri Lemah"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Battery Critically Low"
+msgstr "Bateri Sangat Lemah"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Battery Empty"
+msgstr "Bateri Kosong"
+
+#: cutefish-services/battery/batterywarning.cpp
+#, python-brace-format
+msgid "{percent}% of battery remaining ({time})."
+msgstr "{percent}% bateri berbaki ({time})."
+
+#: cutefish-services/battery/batterywarning.cpp
+#, python-brace-format
+msgid "{percent}% of battery remaining."
+msgstr "{percent}% bateri berbaki."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Save your work and connect to power. The computer will shut down when the battery is nearly empty."
+msgstr "Simpan kerja anda dan sambungkan kepada kuasa. Komputer akan dimatikan apabila bateri hampir kosong."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power. The computer will hibernate when the battery is nearly empty."
+msgstr "Sambungkan kepada kuasa. Komputer akan berhibernasi apabila bateri hampir kosong."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Save your work and connect to power. The computer will go to sleep when the battery is nearly empty."
+msgstr "Simpan kerja anda dan sambungkan kepada kuasa. Komputer akan tidur apabila bateri hampir kosong."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power soon."
+msgstr "Sambungkan kepada kuasa segera."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to shut down. Connect to power to keep it running."
+msgstr "Komputer akan dimatikan sebentar lagi. Sambungkan kepada kuasa untuk terus menggunakannya."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to hibernate. Connect to power to keep it running."
+msgstr "Komputer akan berhibernasi sebentar lagi. Sambungkan kepada kuasa untuk terus menggunakannya."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to go to sleep. Connect to power to keep it running."
+msgstr "Komputer akan tidur sebentar lagi. Sambungkan kepada kuasa untuk terus menggunakannya."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power now."
+msgstr "Sambungkan kepada kuasa sekarang."
+
+#: cutefish-services/crash/crashdialog.cpp
+#, python-brace-format
+msgid "“{name}” quit unexpectedly"
+msgstr "“{name}” keluar secara tidak dijangka"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "Close"
+msgstr "Tutup"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "Reopen"
+msgstr "Buka Semula"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "OK"
+msgstr "OK"
+
+#: cutefish-services/crash/crashdialog.cpp
+#, python-brace-format
+msgid "Reason: {reason}"
+msgstr "Sebab: {reason}"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "It is restarted automatically."
+msgstr "Ia dimulakan semula secara automatik."
+
+#: cutefish-services/crash/crashmanager.cpp
+msgid "Application Runtime"
+msgstr "Masa Jalan Aplikasi"
+
+#: cutefish-services/locale/language.cpp
+msgid "Some applications may need to be restarted for the change to take effect."
+msgstr "Sesetengah aplikasi mungkin perlu dimulakan semula supaya perubahan berkuat kuasa."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+#, python-brace-format
+msgid "Share your screen with “{name}”"
+msgstr "Kongsi skrin anda dengan “{name}”"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a display or a window. What is shown on it will be visible to the application until it stops sharing."
+msgstr "Pilih paparan atau tetingkap. Apa yang ditunjukkan padanya akan kelihatan kepada aplikasi sehingga ia berhenti berkongsi."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a window. Its contents will be visible to the application until it stops sharing."
+msgstr "Pilih tetingkap. Kandungannya akan kelihatan kepada aplikasi sehingga ia berhenti berkongsi."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a display. Everything shown on it, including other windows, will be visible to the application until it stops sharing."
+msgstr "Pilih paparan. Semua yang ditunjukkan padanya, termasuk tetingkap lain, akan kelihatan kepada aplikasi sehingga ia berhenti berkongsi."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Share"
+msgstr "Kongsi"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Windows"
+msgstr "Tetingkap"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Displays"
+msgstr "Paparan"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Always allow this app"
+msgstr "Sentiasa benarkan aplikasi ini"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Let “An app” control this computer?"
+msgstr "Benarkan “Sebuah aplikasi” mengawal komputer ini?"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+#, python-brace-format
+msgid "Let “{name}” control this computer?"
+msgstr "Benarkan “{name}” mengawal komputer ini?"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "It will see your screen and use the pointer and keyboard until you stop it with the Stop button in the menu bar. Using the pointer or keyboard yourself pauses it, and it cannot answer system dialogs like this one."
+msgstr "Ia akan melihat skrin anda dan menggunakan penuding serta papan kekunci sehingga anda menghentikannya dengan butang Henti dalam bar menu. Menggunakan penuding atau papan kekunci sendiri akan menjedanya, dan ia tidak boleh menjawab dialog sistem seperti ini."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Allow"
+msgstr "Benarkan"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Cancel"
+msgstr "Batal"
+
+#: session/processmanager.cpp
+msgid "Log out cancelled"
+msgstr "Log keluar dibatalkan"
+
+#: session/processmanager.cpp
+msgid "Restart cancelled"
+msgstr "Mula semula dibatalkan"
+
+#: session/processmanager.cpp
+msgid "Shutdown cancelled"
+msgstr "Penutupan dibatalkan"
+
+#: session/processmanager.cpp
+msgid "An application cancelled it."
+msgstr "Sebuah aplikasi telah membatalkannya."
+
+#: session/processmanager.cpp
+msgid "An application did not quit."
+msgstr "Sebuah aplikasi tidak keluar."
+
+#: session/processmanager.cpp
+#, python-brace-format
+msgid "{name} cancelled it."
+msgstr "{name} telah membatalkannya."
+
+#: session/processmanager.cpp
+#, python-brace-format
+msgid "{name} did not quit."
+msgstr "{name} tidak keluar."
+
+#. TRANSLATORS: the sender of a notification from the session itself.
+#: session/processmanager.cpp
+msgid "System"
+msgstr "Sistem"
+
+#: session/cutefish-wayland.desktop
+msgid "Cutefish (Wayland)"
+msgstr "Cutefish (Wayland)"
+
+#: session/cutefish-wayland.desktop
+msgid "Cutefish desktop session"
+msgstr "Sesi desktop Cutefish"

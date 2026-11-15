@@ -1,0 +1,253 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: cutefish-core\n"
+"Report-Msgid-Bugs-To: https://github.com/cutefishos\n"
+"POT-Creation-Date: 2026-10-20 09:33+0800\n"
+"PO-Revision-Date: 2026-10-20 09:33+0800\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Calculating…"
+msgstr "Počítání…"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} until fully charged"
+msgstr "{time} do úplného nabití"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} remaining"
+msgstr "Zbývá {time}"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Fully charged."
+msgstr "Plně nabito."
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "Charging paused at {percent}%"
+msgstr "Nabíjení pozastaveno na {percent} %"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Not charging"
+msgstr "Nenabíjí se"
+
+#. TRANSLATORS: days in a short battery time such as "1d 2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}d"
+msgstr "{n} d"
+
+#. TRANSLATORS: hours in a short battery time such as "2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}h"
+msgstr "{n} h"
+
+#. TRANSLATORS: minutes in a short battery time such as "2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}m"
+msgstr "{n} min"
+
+#. TRANSLATORS: when the battery was last fully charged, under a minute ago.
+#: cutefish-services/battery/battery.cpp
+msgid "now"
+msgstr "právě teď"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} ago"
+msgstr "před {time}"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Low Battery"
+msgstr "Slabá baterie"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Battery Critically Low"
+msgstr "Kriticky slabá baterie"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Battery Empty"
+msgstr "Baterie je vybitá"
+
+#: cutefish-services/battery/batterywarning.cpp
+#, python-brace-format
+msgid "{percent}% of battery remaining ({time})."
+msgstr "Zbývá {percent} % baterie ({time})."
+
+#: cutefish-services/battery/batterywarning.cpp
+#, python-brace-format
+msgid "{percent}% of battery remaining."
+msgstr "Zbývá {percent} % baterie."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Save your work and connect to power. The computer will shut down when the battery is nearly empty."
+msgstr "Uložte svou práci a připojte napájení. Až bude baterie téměř vybitá, počítač se vypne."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power. The computer will hibernate when the battery is nearly empty."
+msgstr "Připojte napájení. Až bude baterie téměř vybitá, počítač přejde do režimu hibernace."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Save your work and connect to power. The computer will go to sleep when the battery is nearly empty."
+msgstr "Uložte svou práci a připojte napájení. Až bude baterie téměř vybitá, počítač přejde do režimu spánku."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power soon."
+msgstr "Brzy připojte napájení."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to shut down. Connect to power to keep it running."
+msgstr "Počítač se brzy vypne. Aby zůstal zapnutý, připojte napájení."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to hibernate. Connect to power to keep it running."
+msgstr "Počítač brzy přejde do režimu hibernace. Aby zůstal zapnutý, připojte napájení."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to go to sleep. Connect to power to keep it running."
+msgstr "Počítač brzy přejde do režimu spánku. Aby zůstal zapnutý, připojte napájení."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power now."
+msgstr "Ihned připojte napájení."
+
+#: cutefish-services/crash/crashdialog.cpp
+#, python-brace-format
+msgid "“{name}” quit unexpectedly"
+msgstr "Aplikace „{name}“ byla neočekávaně ukončena"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "Close"
+msgstr "Zavřít"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "Reopen"
+msgstr "Znovu otevřít"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "OK"
+msgstr "OK"
+
+#: cutefish-services/crash/crashdialog.cpp
+#, python-brace-format
+msgid "Reason: {reason}"
+msgstr "Důvod: {reason}"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "It is restarted automatically."
+msgstr "Bude automaticky restartována."
+
+#: cutefish-services/crash/crashmanager.cpp
+msgid "Application Runtime"
+msgstr "Běhové prostředí aplikací"
+
+#: cutefish-services/locale/language.cpp
+msgid "Some applications may need to be restarted for the change to take effect."
+msgstr "Některé aplikace bude možná nutné restartovat, aby se změna projevila."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+#, python-brace-format
+msgid "Share your screen with “{name}”"
+msgstr "Sdílet obrazovku s aplikací „{name}“"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a display or a window. What is shown on it will be visible to the application until it stops sharing."
+msgstr "Vyberte obrazovku nebo okno. Co se na něm zobrazuje, bude aplikace vidět, dokud sdílení neukončí."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a window. Its contents will be visible to the application until it stops sharing."
+msgstr "Vyberte okno. Jeho obsah bude aplikace vidět, dokud sdílení neukončí."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a display. Everything shown on it, including other windows, will be visible to the application until it stops sharing."
+msgstr "Vyberte obrazovku. Vše, co se na ní zobrazuje, včetně ostatních oken, bude aplikace vidět, dokud sdílení neukončí."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Share"
+msgstr "Sdílet"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Windows"
+msgstr "Okna"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Displays"
+msgstr "Obrazovky"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Always allow this app"
+msgstr "Vždy povolit této aplikaci"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Let “An app” control this computer?"
+msgstr "Povolit „aplikaci“ ovládat tento počítač?"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+#, python-brace-format
+msgid "Let “{name}” control this computer?"
+msgstr "Povolit aplikaci „{name}“ ovládat tento počítač?"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "It will see your screen and use the pointer and keyboard until you stop it with the Stop button in the menu bar. Using the pointer or keyboard yourself pauses it, and it cannot answer system dialogs like this one."
+msgstr "Uvidí vaši obrazovku a bude používat ukazatel a klávesnici, dokud ji nezastavíte tlačítkem Zastavit v řádku nabídek. Když sami použijete ukazatel nebo klávesnici, pozastaví se. Na systémové dialogy, jako je tento, odpovídat nemůže."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Allow"
+msgstr "Povolit"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: session/processmanager.cpp
+msgid "Log out cancelled"
+msgstr "Odhlášení zrušeno"
+
+#: session/processmanager.cpp
+msgid "Restart cancelled"
+msgstr "Restart zrušen"
+
+#: session/processmanager.cpp
+msgid "Shutdown cancelled"
+msgstr "Vypnutí zrušeno"
+
+#: session/processmanager.cpp
+msgid "An application cancelled it."
+msgstr "Zrušila ho jedna z aplikací."
+
+#: session/processmanager.cpp
+msgid "An application did not quit."
+msgstr "Jedna z aplikací se neukončila."
+
+#: session/processmanager.cpp
+#, python-brace-format
+msgid "{name} cancelled it."
+msgstr "Zrušila ho aplikace {name}."
+
+#: session/processmanager.cpp
+#, python-brace-format
+msgid "{name} did not quit."
+msgstr "Aplikace {name} se neukončila."
+
+#. TRANSLATORS: the sender of a notification from the session itself.
+#: session/processmanager.cpp
+msgid "System"
+msgstr "Systém"
+
+#: session/cutefish-wayland.desktop
+msgid "Cutefish (Wayland)"
+msgstr "Cutefish (Wayland)"
+
+#: session/cutefish-wayland.desktop
+msgid "Cutefish desktop session"
+msgstr "Relace pracovního prostředí Cutefish"

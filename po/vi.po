@@ -1,0 +1,253 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: cutefish-core\n"
+"Report-Msgid-Bugs-To: https://github.com/cutefishos\n"
+"POT-Creation-Date: 2026-10-20 09:33+0800\n"
+"PO-Revision-Date: 2026-10-20 09:33+0800\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: vi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Calculating…"
+msgstr "Đang tính…"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} until fully charged"
+msgstr "Còn {time} nữa là sạc đầy"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} remaining"
+msgstr "Còn lại {time}"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Fully charged."
+msgstr "Đã sạc đầy."
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "Charging paused at {percent}%"
+msgstr "Đã tạm dừng sạc ở mức {percent}%"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Not charging"
+msgstr "Không sạc"
+
+#. TRANSLATORS: days in a short battery time such as "1d 2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}d"
+msgstr "{n} ngày"
+
+#. TRANSLATORS: hours in a short battery time such as "2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}h"
+msgstr "{n} giờ"
+
+#. TRANSLATORS: minutes in a short battery time such as "2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}m"
+msgstr "{n} phút"
+
+#. TRANSLATORS: when the battery was last fully charged, under a minute ago.
+#: cutefish-services/battery/battery.cpp
+msgid "now"
+msgstr "vừa xong"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} ago"
+msgstr "{time} trước"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Low Battery"
+msgstr "Pin yếu"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Battery Critically Low"
+msgstr "Pin cực yếu"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Battery Empty"
+msgstr "Hết pin"
+
+#: cutefish-services/battery/batterywarning.cpp
+#, python-brace-format
+msgid "{percent}% of battery remaining ({time})."
+msgstr "Còn {percent}% pin ({time})."
+
+#: cutefish-services/battery/batterywarning.cpp
+#, python-brace-format
+msgid "{percent}% of battery remaining."
+msgstr "Còn {percent}% pin."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Save your work and connect to power. The computer will shut down when the battery is nearly empty."
+msgstr "Hãy lưu công việc và cắm nguồn điện. Máy tính sẽ tắt khi pin gần cạn."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power. The computer will hibernate when the battery is nearly empty."
+msgstr "Hãy cắm nguồn điện. Máy tính sẽ ngủ đông khi pin gần cạn."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Save your work and connect to power. The computer will go to sleep when the battery is nearly empty."
+msgstr "Hãy lưu công việc và cắm nguồn điện. Máy tính sẽ chuyển sang chế độ ngủ khi pin gần cạn."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power soon."
+msgstr "Hãy sớm cắm nguồn điện."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to shut down. Connect to power to keep it running."
+msgstr "Máy tính sắp tắt. Hãy cắm nguồn điện để máy tiếp tục chạy."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to hibernate. Connect to power to keep it running."
+msgstr "Máy tính sắp ngủ đông. Hãy cắm nguồn điện để máy tiếp tục chạy."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to go to sleep. Connect to power to keep it running."
+msgstr "Máy tính sắp chuyển sang chế độ ngủ. Hãy cắm nguồn điện để máy tiếp tục chạy."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power now."
+msgstr "Hãy cắm nguồn điện ngay."
+
+#: cutefish-services/crash/crashdialog.cpp
+#, python-brace-format
+msgid "“{name}” quit unexpectedly"
+msgstr "“{name}” đã thoát đột ngột"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "Close"
+msgstr "Đóng"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "Reopen"
+msgstr "Mở lại"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "OK"
+msgstr "OK"
+
+#: cutefish-services/crash/crashdialog.cpp
+#, python-brace-format
+msgid "Reason: {reason}"
+msgstr "Lý do: {reason}"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "It is restarted automatically."
+msgstr "Ứng dụng được khởi động lại tự động."
+
+#: cutefish-services/crash/crashmanager.cpp
+msgid "Application Runtime"
+msgstr "Môi trường chạy ứng dụng"
+
+#: cutefish-services/locale/language.cpp
+msgid "Some applications may need to be restarted for the change to take effect."
+msgstr "Một số ứng dụng có thể cần khởi động lại để thay đổi có hiệu lực."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+#, python-brace-format
+msgid "Share your screen with “{name}”"
+msgstr "Chia sẻ màn hình với “{name}”"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a display or a window. What is shown on it will be visible to the application until it stops sharing."
+msgstr "Chọn một màn hình hoặc một cửa sổ. Ứng dụng sẽ thấy những gì hiển thị trên đó cho đến khi ngừng chia sẻ."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a window. Its contents will be visible to the application until it stops sharing."
+msgstr "Chọn một cửa sổ. Ứng dụng sẽ thấy nội dung của cửa sổ cho đến khi ngừng chia sẻ."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a display. Everything shown on it, including other windows, will be visible to the application until it stops sharing."
+msgstr "Chọn một màn hình. Ứng dụng sẽ thấy mọi thứ hiển thị trên đó, kể cả các cửa sổ khác, cho đến khi ngừng chia sẻ."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Share"
+msgstr "Chia sẻ"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Windows"
+msgstr "Cửa sổ"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Displays"
+msgstr "Màn hình"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Always allow this app"
+msgstr "Luôn cho phép ứng dụng này"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Let “An app” control this computer?"
+msgstr "Cho phép “Một ứng dụng” điều khiển máy tính này?"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+#, python-brace-format
+msgid "Let “{name}” control this computer?"
+msgstr "Cho phép “{name}” điều khiển máy tính này?"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "It will see your screen and use the pointer and keyboard until you stop it with the Stop button in the menu bar. Using the pointer or keyboard yourself pauses it, and it cannot answer system dialogs like this one."
+msgstr "Ứng dụng sẽ thấy màn hình của bạn và dùng con trỏ cùng bàn phím cho đến khi bạn dừng nó bằng nút Dừng trên thanh menu. Khi bạn tự dùng con trỏ hoặc bàn phím, ứng dụng sẽ tạm dừng, và ứng dụng không thể trả lời các hộp thoại hệ thống như hộp thoại này."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Allow"
+msgstr "Cho phép"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Cancel"
+msgstr "Hủy"
+
+#: session/processmanager.cpp
+msgid "Log out cancelled"
+msgstr "Đã hủy đăng xuất"
+
+#: session/processmanager.cpp
+msgid "Restart cancelled"
+msgstr "Đã hủy khởi động lại"
+
+#: session/processmanager.cpp
+msgid "Shutdown cancelled"
+msgstr "Đã hủy tắt máy"
+
+#: session/processmanager.cpp
+msgid "An application cancelled it."
+msgstr "Một ứng dụng đã hủy thao tác."
+
+#: session/processmanager.cpp
+msgid "An application did not quit."
+msgstr "Một ứng dụng không thoát."
+
+#: session/processmanager.cpp
+#, python-brace-format
+msgid "{name} cancelled it."
+msgstr "{name} đã hủy thao tác."
+
+#: session/processmanager.cpp
+#, python-brace-format
+msgid "{name} did not quit."
+msgstr "{name} không thoát."
+
+#. TRANSLATORS: the sender of a notification from the session itself.
+#: session/processmanager.cpp
+msgid "System"
+msgstr "Hệ thống"
+
+#: session/cutefish-wayland.desktop
+msgid "Cutefish (Wayland)"
+msgstr "Cutefish (Wayland)"
+
+#: session/cutefish-wayland.desktop
+msgid "Cutefish desktop session"
+msgstr "Phiên làm việc Cutefish"
