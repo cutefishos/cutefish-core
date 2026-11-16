@@ -46,6 +46,9 @@ public:
     bool continuousCorners() const;
     void setContinuousCorners(bool value);
 
+    bool reduceTransparency() const;
+    void setReduceTransparency(bool value);
+
     std::string systemFont();
     void setSystemFont(const std::string &fontFamily);
 
@@ -109,6 +112,7 @@ private:
     std::vector<cutefish::base::Subscription> m_subscriptions;
 
     bool m_continuousCorners = true;
+    bool m_reduceTransparency = false;
     int m_accentColor = 0;
 
     std::string m_cursorTheme;

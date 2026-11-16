@@ -10,6 +10,9 @@
     <method name="setContinuousCorners">
         <arg name="continuousCorners" type="b" direction="in"/>
     </method>
+    <method name="setReduceTransparency">
+        <arg name="reduceTransparency" type="b" direction="in"/>
+    </method>
     <method name="setSystemFont">
         <arg name="fontFamily" type="s" direction="in"/>
     </method>
@@ -63,6 +66,7 @@
     <property name="isDarkMode" type="b" access="read"/>
     <property name="darkModeSchedule" type="i" access="read"/>
     <property name="continuousCorners" type="b" access="read"/>
+    <property name="reduceTransparency" type="b" access="read"/>
     <property name="systemFont" type="s" access="read"/>
     <property name="systemFixedFont" type="s" access="read"/>
     <property name="systemFontPointSize" type="d" access="read"/>
@@ -91,6 +95,9 @@
         <arg type="s"/>
     </signal>
     <signal name="continuousCornersChanged">
+        <arg type="b"/>
+    </signal>
+    <signal name="reduceTransparencyChanged">
         <arg type="b"/>
     </signal>
     <signal name="accentColorChanged">
