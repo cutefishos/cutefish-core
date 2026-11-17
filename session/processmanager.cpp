@@ -103,6 +103,14 @@ ProcessManager::ProcessManager()
     m_autostartTimer.onTimeout = [this] {
         loadAutoStartProcess();
     };
+    m_servicesTimeout.setSingleShot(true);
+    m_servicesTimeout.onTimeout = [this] {
+        m_servicesWatch = {};
+        if (m_loggingOut)
+            return;
+        CF_WARNING(sessionLog()) << "cutefish-services did not take its bus name; starting the desktop without it";
+        startDesktopProcess();
+    };
     m_exitTimer.setSingleShot(true);
 }
 
@@ -194,9 +202,9 @@ void ProcessManager::startAfterCompositorReady()
         return;
     m_compositorReady = true;
 
-    // The persistent control channel. It is what makes a shell restart possible
-    // without restarting the compositor: every shell generation gets a fresh
-    // Wayland socketpair over it.
+    // The persistent control channel. It is what makes a desktop restart
+    // possible without restarting the compositor: every file manager daemon
+    // gets a fresh Wayland socketpair over it.
     if (!m_shellConnection->connectToCompositor(m_controlSocket)) {
         CF_WARNING(sessionLog()) << "No compositor control channel; the shell will run without "
                                     "the private Cutefish protocols";
@@ -208,9 +216,13 @@ void ProcessManager::startAfterCompositorReady()
             if (owner.empty())
                 return;
             m_servicesWatch = {};
+            m_servicesTimeout.stop();
             startDesktopProcess();
         });
     }
+    // As long as the compositor is given to come up. A services daemon that
+    // crashes at start is back within it, after the first restarts.
+    m_servicesTimeout.start(15s);
 
     startDaemonProcess();
 }

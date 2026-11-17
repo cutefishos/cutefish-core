@@ -76,6 +76,7 @@ private:
     std::unique_ptr<ShellProcess> m_shellProcess;
     std::unique_ptr<RestartPolicy> m_shellRestart;
     cutefish::base::dbus::NameWatch m_servicesWatch;
+    cutefish::base::Timer m_servicesTimeout;
     cutefish::base::dbus::PendingCall m_quitAllCall;
     cutefish::base::dbus::PendingCall m_applicationsCall;
     cutefish::base::Timer m_applicationsPoll;
