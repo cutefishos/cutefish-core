@@ -177,15 +177,11 @@ bool AppRuntime::quitByPid(uint32_t pid)
 // rest of its application, such as helpers it started.
 bool AppRuntime::forceQuitByPid(uint32_t pid)
 {
-    const auto it = m_instances.find(pid);
-    if (it == m_instances.end())
+    if (!isSafeTarget(pid))
         return false;
-    // The scope exists only for an id the registry knows; see startProcess().
-    const auto entry = base::ApplicationRegistry::instance().byId(it->second.appId);
-    if (!entry)
-        return false;
-    ApplicationScope::killAll(ApplicationScope::unitName(entry->id, pid));
-    return true;
+    // By the scope's name, not m_instances: a restarted runtime has lost the
+    // applications started before it.
+    return ApplicationScope::killAllOf(pid);
 }
 
 bool AppRuntime::terminate(uint32_t pid)

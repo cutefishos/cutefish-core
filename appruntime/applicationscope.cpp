@@ -5,6 +5,7 @@
 #include "common/detached_call.h"
 
 #include <cstdio>
+#include <string_view>
 #include <tuple>
 #include <vector>
 
@@ -79,6 +80,43 @@ void ApplicationScope::killAll(const std::string &unitName)
     dbus::Message call = managerCall(bus, "KillUnit");
     call.append(unitName, std::string("all"), int32_t(SIGKILL));
     bus->send(call);
+}
+
+bool ApplicationScope::killAllOf(uint32_t pid)
+{
+    dbus::Connection *bus = dbus::Connection::session();
+    if (!bus)
+        return false;
+    dbus::Message list = managerCall(bus, "ListUnitsByPatterns");
+    list.append(std::vector<std::string> {"active", "activating", "deactivating"},
+                std::vector<std::string> {"app-cutefish-*-" + std::to_string(pid) + ".scope"});
+    // The session connection outlives the call.
+    cutefish::core::callDetached(bus, list, [pid](const dbus::Reply &reply) {
+        std::vector<UnitInfo> units;
+        if (!reply.read(units)) {
+            CF_WARNING(kLog) << "AppRuntime: cannot list the application scopes:" << reply.error().message;
+            return;
+        }
+        for (const UnitInfo &unit : units) {
+            if (namesProcess(std::get<0>(unit), pid))
+                killAll(std::get<0>(unit));
+        }
+    });
+    return true;
+}
+
+bool ApplicationScope::namesProcess(const std::string &unitName, uint32_t pid)
+{
+    static constexpr std::string_view kPrefix = "app-cutefish-";
+    const std::string suffix = '-' + std::to_string(pid) + ".scope";
+    if (unitName.size() <= kPrefix.size() + suffix.size() || !unitName.starts_with(kPrefix)
+        || !unitName.ends_with(suffix))
+        return false;
+
+    // escape() leaves no dash in the app id.
+    const std::string_view appId =
+            std::string_view(unitName).substr(kPrefix.size(), unitName.size() - kPrefix.size() - suffix.size());
+    return appId.find('-') == std::string_view::npos;
 }
 
 void ApplicationScope::stopAll()

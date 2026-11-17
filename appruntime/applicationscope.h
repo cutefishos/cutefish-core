@@ -19,6 +19,13 @@ void adopt(const std::string &appId, uint32_t pid);
 // with its last process is no failure.
 void killAll(const std::string &unitName);
 
+// killAll() for the scope adopt() made for `pid`, found by its unit name, so
+// the app id need not be known. False when the user manager cannot be asked.
+bool killAllOf(uint32_t pid);
+
+// Whether `unitName` is the scope adopt() names for `pid`, whatever its app id.
+bool namesProcess(const std::string &unitName, uint32_t pid);
+
 // Asks the user manager to stop every application scope that is up: the
 // ones adopt() made and those applications moved themselves into, which
 // the runtime no longer tracks. systemd ends their processes as the end of
