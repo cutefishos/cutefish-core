@@ -49,9 +49,6 @@ public:
     bool reduceTransparency() const;
     void setReduceTransparency(bool value);
 
-    bool coloredWindowControls() const;
-    void setColoredWindowControls(bool value);
-
     std::string systemFont();
     void setSystemFont(const std::string &fontFamily);
 
@@ -116,7 +113,6 @@ private:
 
     bool m_continuousCorners = true;
     bool m_reduceTransparency = false;
-    bool m_coloredWindowControls = false;
     int m_accentColor = 0;
 
     std::string m_cursorTheme;

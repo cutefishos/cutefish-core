@@ -123,7 +123,6 @@ void Application::applyTheme()
     if (!appearance.iconTheme().empty())
         theme.iconTheme = appearance.iconTheme();
     theme.continuousCorners = appearance.continuousCorners();
-    theme.coloredWindowControls = appearance.coloredWindowControls();
     ui::Theme::setCurrent(theme);
 }
 
