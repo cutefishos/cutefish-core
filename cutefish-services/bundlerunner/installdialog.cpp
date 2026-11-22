@@ -12,7 +12,10 @@
 #include "ui/header_button.h"
 #include "ui/keys.h"
 #include "ui/label.h"
+#include "ui/painter.h"
 #include "ui/progress_bar.h"
+#include "ui/scroll_view.h"
+#include "ui/text_area.h"
 #include "ui/theme.h"
 #include "ui/window.h"
 
@@ -45,6 +48,34 @@ protected:
     }
 };
 
+static constexpr double kDetailsHeight = 140;
+
+// The rounded plate behind the error's text.
+class DetailsPlate final : public ui::View
+{
+public:
+    explicit DetailsPlate(std::unique_ptr<ui::View> content)
+        : m_content(content.get())
+    {
+        addChild(std::move(content));
+    }
+
+protected:
+    void layout() override
+    {
+        m_content->setGeometry(localRect());
+    }
+
+    void paint(ui::Painter &painter) override
+    {
+        const ui::Theme &theme = ui::Theme::current();
+        painter.drawSmoothRectangle(localRect(), theme.smallRadius, theme.alternateBackground);
+    }
+
+private:
+    ui::View *m_content;
+};
+
 class InstallDialog::Content : public ui::ColumnLayout
 {
 public:
@@ -59,6 +90,10 @@ public:
         message->setLayoutHints({.fillWidth = true});
 
         const Page page = dialog->m_page;
+        // PackageKit's error text can run to dozens of lines: it scrolls and
+        // can be copied.
+        if (page == Page::Failed && !dialog->m_installer.error().empty())
+            addDetails(dialog->m_installer.error());
         if (page == Page::Progress) {
             addProgressRow();
         } else {
@@ -101,8 +136,7 @@ public:
             message->setText(tr("Reef is not available for this computer."));
             break;
         case Page::Failed:
-            message->setText(installer.error().empty() ? tr("Reef could not be installed.")
-                                                       : installer.error());
+            message->setText(tr("Reef could not be installed."));
             break;
         }
     }
@@ -112,6 +146,21 @@ public:
     ui::HeaderButton *stop = nullptr;
 
 private:
+    void addDetails(const std::string &text)
+    {
+        auto scroll = std::make_unique<ui::ScrollView>();
+        scroll->setScrollDirections(false, true);
+        scroll->setCornerRadius(ui::Theme::current().smallRadius);
+        auto *area = scroll->setContent<ui::TextArea>(text);
+        area->setReadOnly(true);
+        area->setFrameVisible(false);
+        area->setPadding(ui::Margins::all(8));
+        area->setFontSize(12);
+        area->setLayoutHints({.fillWidth = true});
+        auto *plate = addChild<DetailsPlate>(std::move(scroll));
+        plate->setLayoutHints({.fillWidth = true, .preferredHeight = kDetailsHeight});
+    }
+
     void addProgressRow()
     {
         auto *row = addChild<ui::RowLayout>();
