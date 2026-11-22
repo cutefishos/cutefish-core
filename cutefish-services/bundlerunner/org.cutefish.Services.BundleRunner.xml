@@ -1,0 +1,16 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+    "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="org.cutefish.Services.BundleRunner">
+    <!-- False once the package sources turned out not to have it. -->
+    <property name="installable" type="b" access="read"/>
+
+    <!-- Offers to install the program that runs bundles, then opens path.
+         False when the program cannot be had. -->
+    <method name="offer">
+      <arg name="path" type="s" direction="in"/>
+      <arg name="activationToken" type="s" direction="in"/>
+      <arg name="offered" type="b" direction="out"/>
+    </method>
+  </interface>
+</node>

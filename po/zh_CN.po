@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cutefish-core\n"
 "Report-Msgid-Bugs-To: https://github.com/cutefishos\n"
-"POT-Creation-Date: 2026-11-15 10:33+0800\n"
+"POT-Creation-Date: 2026-11-22 18:34+0800\n"
 "PO-Revision-Date: 2026-10-20 09:33+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -121,6 +121,53 @@ msgstr "电脑即将进入睡眠。请连接电源以保持运行。"
 msgid "Connect to power now."
 msgstr "请立即连接电源。"
 
+#: cutefish-services/bundlerunner/installdialog.cpp
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Cancel"
+msgstr "取消"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Install"
+msgstr "安装"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+#: cutefish-services/crash/crashdialog.cpp
+msgid "OK"
+msgstr "确定"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+#, python-brace-format
+msgid "To open “{name}”, Reef has to be downloaded and installed."
+msgstr "要打开“{name}”，需要下载并安装 Reef。"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Installing…"
+msgstr "正在安装…"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Downloading…"
+msgstr "正在下载…"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Looking for Reef…"
+msgstr "正在查找 Reef…"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Reef is not available for this computer."
+msgstr "Reef 不适用于这台电脑。"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Reef could not be installed."
+msgstr "无法安装 Reef。"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Stop"
+msgstr "停止"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Install Reef"
+msgstr "安装 Reef"
+
 #: cutefish-services/crash/crashdialog.cpp
 #, python-brace-format
 msgid "“{name}” quit unexpectedly"
@@ -133,10 +180,6 @@ msgstr "关闭"
 #: cutefish-services/crash/crashdialog.cpp
 msgid "Reopen"
 msgstr "重新打开"
-
-#: cutefish-services/crash/crashdialog.cpp
-msgid "OK"
-msgstr "确定"
 
 #: cutefish-services/crash/crashdialog.cpp
 #, python-brace-format
@@ -204,10 +247,6 @@ msgstr "它将能看到你的屏幕，并使用指针和键盘，直到你用菜
 #: cutefish-services/permissions/permissionprompt.cpp
 msgid "Allow"
 msgstr "允许"
-
-#: cutefish-services/permissions/permissionprompt.cpp
-msgid "Cancel"
-msgstr "取消"
 
 #: cutefish-services/softwareupdate/softwareupdate.cpp
 msgid "Updates Installed"

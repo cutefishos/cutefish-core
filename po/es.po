@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cutefish-core\n"
 "Report-Msgid-Bugs-To: https://github.com/cutefishos\n"
-"POT-Creation-Date: 2026-11-15 10:33+0800\n"
+"POT-Creation-Date: 2026-11-22 18:34+0800\n"
 "PO-Revision-Date: 2026-10-20 09:33+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -121,6 +121,53 @@ msgstr "La computadora está a punto de entrar en suspensión. Conéctala a la c
 msgid "Connect to power now."
 msgstr "Conecta la computadora a la corriente ahora."
 
+#: cutefish-services/bundlerunner/installdialog.cpp
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Install"
+msgstr "Instalar"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+#: cutefish-services/crash/crashdialog.cpp
+msgid "OK"
+msgstr "Aceptar"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+#, python-brace-format
+msgid "To open “{name}”, Reef has to be downloaded and installed."
+msgstr "Para abrir “{name}”, hay que descargar e instalar Reef."
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Installing…"
+msgstr "Instalando…"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Downloading…"
+msgstr "Descargando…"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Looking for Reef…"
+msgstr "Buscando Reef…"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Reef is not available for this computer."
+msgstr "Reef no está disponible para esta computadora."
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Reef could not be installed."
+msgstr "No se pudo instalar Reef."
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Stop"
+msgstr "Detener"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Install Reef"
+msgstr "Instalar Reef"
+
 #: cutefish-services/crash/crashdialog.cpp
 #, python-brace-format
 msgid "“{name}” quit unexpectedly"
@@ -133,10 +180,6 @@ msgstr "Cerrar"
 #: cutefish-services/crash/crashdialog.cpp
 msgid "Reopen"
 msgstr "Volver a abrir"
-
-#: cutefish-services/crash/crashdialog.cpp
-msgid "OK"
-msgstr "Aceptar"
 
 #: cutefish-services/crash/crashdialog.cpp
 #, python-brace-format
@@ -204,10 +247,6 @@ msgstr "Verá tu pantalla y usará el puntero y el teclado hasta que la detengas
 #: cutefish-services/permissions/permissionprompt.cpp
 msgid "Allow"
 msgstr "Permitir"
-
-#: cutefish-services/permissions/permissionprompt.cpp
-msgid "Cancel"
-msgstr "Cancelar"
 
 #: cutefish-services/softwareupdate/softwareupdate.cpp
 msgid "Updates Installed"

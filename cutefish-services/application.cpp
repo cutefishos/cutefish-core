@@ -7,6 +7,7 @@
 #include "battery/batterywarning.h"
 #include "battery/powersupply.h"
 #include "brightness/brightnessmanager.h"
+#include "bundlerunner/bundlerunner.h"
 #include "clipboard/clipboard.h"
 #include "crash/crashmanager.h"
 #include "locale/language.h"
@@ -71,6 +72,7 @@ Application::Application()
     m_crashManager = std::make_unique<CrashManager>([this] { return m_themeManager->systemFixedFont(); });
     m_proxyService = std::make_unique<ProxyService>(m_session);
     m_softwareUpdate = std::make_unique<SoftwareUpdate>(m_system, m_session, m_settings);
+    m_bundleRunner = std::make_unique<BundleRunner>(m_session);
 
     initTrash();
 
@@ -92,6 +94,7 @@ Application::Application()
     published(m_nightLight->publish(m_session), "NightLight");
     published(m_permissionManager->publish(), "Permissions");
     published(m_softwareUpdate->publish(), "SoftwareUpdate");
+    published(m_bundleRunner->publish(), "BundleRunner");
 
     if (!m_session || !m_session->requestName("org.cutefish.Services"))
         CF_WARNING(services::log()) << "Cannot own org.cutefish.Services";

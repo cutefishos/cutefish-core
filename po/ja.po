@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cutefish-core\n"
 "Report-Msgid-Bugs-To: https://github.com/cutefishos\n"
-"POT-Creation-Date: 2026-11-15 10:33+0800\n"
+"POT-Creation-Date: 2026-11-22 18:34+0800\n"
 "PO-Revision-Date: 2026-10-20 09:33+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -121,6 +121,53 @@ msgstr "コンピュータはまもなくスリープします。使い続ける
 msgid "Connect to power now."
 msgstr "今すぐ電源に接続してください。"
 
+#: cutefish-services/bundlerunner/installdialog.cpp
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Cancel"
+msgstr "キャンセル"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Install"
+msgstr "インストール"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+#: cutefish-services/crash/crashdialog.cpp
+msgid "OK"
+msgstr "OK"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+#, python-brace-format
+msgid "To open “{name}”, Reef has to be downloaded and installed."
+msgstr "「{name}」を開くには、Reef をダウンロードしてインストールする必要があります。"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Installing…"
+msgstr "インストール中…"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Downloading…"
+msgstr "ダウンロード中…"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Looking for Reef…"
+msgstr "Reef を検索中…"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Reef is not available for this computer."
+msgstr "このコンピュータでは Reef を利用できません。"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Reef could not be installed."
+msgstr "Reef をインストールできませんでした。"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Stop"
+msgstr "停止"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Install Reef"
+msgstr "Reef をインストール"
+
 #: cutefish-services/crash/crashdialog.cpp
 #, python-brace-format
 msgid "“{name}” quit unexpectedly"
@@ -133,10 +180,6 @@ msgstr "閉じる"
 #: cutefish-services/crash/crashdialog.cpp
 msgid "Reopen"
 msgstr "再度開く"
-
-#: cutefish-services/crash/crashdialog.cpp
-msgid "OK"
-msgstr "OK"
 
 #: cutefish-services/crash/crashdialog.cpp
 #, python-brace-format
@@ -204,10 +247,6 @@ msgstr "メニューバーの停止ボタンで停止するまで、画面を見
 #: cutefish-services/permissions/permissionprompt.cpp
 msgid "Allow"
 msgstr "許可"
-
-#: cutefish-services/permissions/permissionprompt.cpp
-msgid "Cancel"
-msgstr "キャンセル"
 
 #: cutefish-services/softwareupdate/softwareupdate.cpp
 msgid "Updates Installed"

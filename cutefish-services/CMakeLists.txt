@@ -44,6 +44,10 @@ add_executable(${TARGET}
     brightness/brightnessmanager.h
     brightness/ddcworker.cpp
     brightness/ddcworker.h
+    bundlerunner/bundlerunner.cpp
+    bundlerunner/bundlerunner.h
+    bundlerunner/installdialog.cpp
+    bundlerunner/installdialog.h
     crash/coredump.cpp
     crash/coredump.h
     crash/coredumpjournal.cpp

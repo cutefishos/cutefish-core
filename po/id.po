@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cutefish-core\n"
 "Report-Msgid-Bugs-To: https://github.com/cutefishos\n"
-"POT-Creation-Date: 2026-11-15 10:33+0800\n"
+"POT-Creation-Date: 2026-11-22 18:34+0800\n"
 "PO-Revision-Date: 2026-10-20 09:33+0800\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -121,6 +121,53 @@ msgstr "Komputer akan segera tidur. Sambungkan ke daya agar tetap menyala."
 msgid "Connect to power now."
 msgstr "Sambungkan ke daya sekarang."
 
+#: cutefish-services/bundlerunner/installdialog.cpp
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Cancel"
+msgstr "Batal"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Install"
+msgstr "Instal"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+#: cutefish-services/crash/crashdialog.cpp
+msgid "OK"
+msgstr "OK"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+#, python-brace-format
+msgid "To open “{name}”, Reef has to be downloaded and installed."
+msgstr "Untuk membuka “{name}”, Reef harus diunduh dan diinstal."
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Installing…"
+msgstr "Menginstal…"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Downloading…"
+msgstr "Mengunduh…"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Looking for Reef…"
+msgstr "Mencari Reef…"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Reef is not available for this computer."
+msgstr "Reef tidak tersedia untuk komputer ini."
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Reef could not be installed."
+msgstr "Reef tidak dapat diinstal."
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Stop"
+msgstr "Hentikan"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Install Reef"
+msgstr "Instal Reef"
+
 #: cutefish-services/crash/crashdialog.cpp
 #, python-brace-format
 msgid "“{name}” quit unexpectedly"
@@ -133,10 +180,6 @@ msgstr "Tutup"
 #: cutefish-services/crash/crashdialog.cpp
 msgid "Reopen"
 msgstr "Buka Ulang"
-
-#: cutefish-services/crash/crashdialog.cpp
-msgid "OK"
-msgstr "OK"
 
 #: cutefish-services/crash/crashdialog.cpp
 #, python-brace-format
@@ -204,10 +247,6 @@ msgstr "Aplikasi ini akan melihat layar Anda serta menggunakan penunjuk dan keyb
 #: cutefish-services/permissions/permissionprompt.cpp
 msgid "Allow"
 msgstr "Izinkan"
-
-#: cutefish-services/permissions/permissionprompt.cpp
-msgid "Cancel"
-msgstr "Batal"
 
 #: cutefish-services/softwareupdate/softwareupdate.cpp
 msgid "Updates Installed"

@@ -11,6 +11,7 @@
 
 class BatteryWarning;
 class BrightnessManager;
+class BundleRunner;
 class Clipboard;
 class CrashManager;
 class Language;
@@ -60,6 +61,7 @@ private:
     std::unique_ptr<CrashManager> m_crashManager;
     std::unique_ptr<ProxyService> m_proxyService;
     std::unique_ptr<SoftwareUpdate> m_softwareUpdate;
+    std::unique_ptr<BundleRunner> m_bundleRunner;
     cutefish::base::Subscription m_themeChanged;
 };
 
