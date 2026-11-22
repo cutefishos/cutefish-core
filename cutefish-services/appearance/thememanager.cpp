@@ -48,6 +48,7 @@ ThemeManager::ThemeManager(Settings &settings, dbus::Connection *session, dbus::
     // init value
     m_continuousCorners = m_settings.boolValue("Appearance/ContinuousCorners", true);
     m_reduceTransparency = m_settings.boolValue("Appearance/ReduceTransparency", false);
+    m_coloredWindowControls = m_settings.boolValue("Appearance/ColoredWindowControls", false);
     m_accentColor = int(m_settings.intValue("Appearance/AccentColor", 0));
     m_cursorTheme = m_settings.stringValue("Appearance/CursorTheme", "default");
     m_cursorSize = int(m_settings.intValue("Appearance/CursorSize", 24));
@@ -103,6 +104,8 @@ bool ThemeManager::publish()
                 {{"continuousCorners"}, {}});
     o.addMethod("setReduceTransparency", [this](bool value) { setReduceTransparency(value); },
                 {{"reduceTransparency"}, {}});
+    o.addMethod("setColoredWindowControls", [this](bool value) { setColoredWindowControls(value); },
+                {{"coloredWindowControls"}, {}});
     o.addMethod("setSystemFont", [this](const std::string &value) { setSystemFont(value); }, {{"fontFamily"}, {}});
     o.addMethod("setSystemFixedFont", [this](const std::string &value) { setSystemFixedFont(value); },
                 {{"fontFamily"}, {}});
@@ -133,6 +136,7 @@ bool ThemeManager::publish()
     o.addProperty("darkModeSchedule", [this] { return int32_t(darkModeSchedule()); });
     o.addProperty("continuousCorners", [this] { return continuousCorners(); });
     o.addProperty("reduceTransparency", [this] { return reduceTransparency(); });
+    o.addProperty("coloredWindowControls", [this] { return coloredWindowControls(); });
     o.addProperty("systemFont", [this] { return systemFont(); });
     o.addProperty("systemFixedFont", [this] { return systemFixedFont(); });
     o.addProperty("systemFontPointSize", [this] { return systemFontPointSize(); });
@@ -154,6 +158,7 @@ bool ThemeManager::publish()
     o.addSignal("wallpaperFolderImagesChanged", "s");
     o.addSignal("continuousCornersChanged", "b");
     o.addSignal("reduceTransparencyChanged", "b");
+    o.addSignal("coloredWindowControlsChanged", "b");
     o.addSignal("accentColorChanged", "i");
     o.addSignal("backgroundTypeChanged", "");
     o.addSignal("backgroundColorChanged", "");
@@ -230,6 +235,22 @@ void ThemeManager::setReduceTransparency(bool value)
     write("ReduceTransparency", m_reduceTransparency);
 
     emitSignal("reduceTransparencyChanged", m_reduceTransparency);
+}
+
+bool ThemeManager::coloredWindowControls() const
+{
+    return m_coloredWindowControls;
+}
+
+void ThemeManager::setColoredWindowControls(bool value)
+{
+    if (m_coloredWindowControls == value)
+        return;
+
+    m_coloredWindowControls = value;
+    write("ColoredWindowControls", m_coloredWindowControls);
+
+    emitSignal("coloredWindowControlsChanged", m_coloredWindowControls);
 }
 
 int ThemeManager::accentColor()
