@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Reion Wong <reionwong@gmail.com>
 // SPDX-License-Identifier: BSD-3-Clause
 
+#include "base/application_registry.h"
 #include "base/dbus.h"
 #include "base/event_loop.h"
 #include "base/process.h"
@@ -8,9 +9,12 @@
 #include <algorithm>
 #include <chrono>
 #include <csignal>
+#include <filesystem>
+#include <fstream>
 #include <functional>
 #include <tuple>
 #include <poll.h>
+#include <stdlib.h>
 
 #include <gtest/gtest.h>
 
@@ -71,6 +75,41 @@ protected:
     Process runtimeProcess {&loop};
     std::string owner;
     dbus::NameWatch watch;
+};
+
+// Bundles in a folder of their own; nothing to test where a program runs them.
+class BundleRuntimeTest : public RuntimeTest
+{
+protected:
+    void SetUp() override
+    {
+        ApplicationRegistry& registry = ApplicationRegistry::instance(&loop);
+        ASSERT_TRUE(runUntil([&] { return !registry.isLoading(); }, 5000));
+        if (registry.runsBundles())
+            GTEST_SKIP() << "A program runs application bundles here";
+        char pattern[] = "/tmp/runtime-bundle-XXXXXX";
+        ASSERT_NE(::mkdtemp(pattern), nullptr);
+        folder = pattern;
+        RuntimeTest::SetUp();
+    }
+
+    void TearDown() override
+    {
+        if (folder.empty())
+            return;
+        RuntimeTest::TearDown();
+        std::filesystem::remove_all(folder);
+    }
+
+    static void writeBundle(const std::string& path)
+    {
+        std::filesystem::create_directories(path + "/Contents/MacOS");
+        std::ofstream(path + "/Contents/Info.plist")
+                << "<?xml version=\"1.0\"?><plist version=\"1.0\"><dict><key>CFBundleExecutable</key>"
+                   "<string>Sample</string></dict></plist>";
+    }
+
+    std::string folder;
 };
 
 } // namespace
@@ -174,4 +213,35 @@ TEST_F(RuntimeTest, refusesWhatItCannotStart)
     // A pid it did not start.
     EXPECT_FALSE(proxy.call("forceQuitByPid", uint32_t(1)).value<bool>().value_or(true));
     EXPECT_FALSE(proxy.call("quitByPid", uint32_t(1)).value<bool>().value_or(true));
+}
+
+TEST_F(BundleRuntimeTest, offersTheBundleRunner)
+{
+    std::vector<std::pair<std::string, std::string>> offers;
+    dbus::Object offer(bus.get(), "/org/cutefish/Services/BundleRunner", "org.cutefish.Services.BundleRunner");
+    offer.addMethod(
+            "offer",
+            [&offers](std::string path, std::string activationToken) {
+                offers.emplace_back(path, activationToken);
+                return true;
+            },
+            dbus::ArgumentNames {{"path", "activationToken"}, {"offered"}});
+    ASSERT_TRUE(offer.publish());
+    ASSERT_TRUE(bus->requestName("org.cutefish.Services", dbus::Connection::DoNotQueue));
+
+    const std::string bundle = folder + "/Sample.app";
+    writeBundle(bundle);
+
+    EXPECT_EQ(runtime()
+                      .call("launchApplication", bundle, std::vector<std::string>(), std::string("token"))
+                      .value<uint32_t>(),
+              0u);
+    ASSERT_TRUE(runUntil([&] { return offers.size() == 1; }, 2000));
+    EXPECT_EQ(offers.front(), std::make_pair(bundle, std::string("token")));
+
+    // Read by now: an entry without a command.
+    runUntil([] { return false; }, 500);
+    runtime().call("launchApplication", bundle, std::vector<std::string>(), std::string("again"));
+    ASSERT_TRUE(runUntil([&] { return offers.size() == 2; }, 2000));
+    EXPECT_EQ(offers.back(), std::make_pair(bundle, std::string("again")));
 }

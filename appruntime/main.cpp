@@ -1,5 +1,7 @@
 #include "appruntime.h"
 
+#include "common/detached_call.h"
+
 #include "base/dbus.h"
 #include "base/event_loop.h"
 #include "base/logging.h"
@@ -61,6 +63,15 @@ int main(int argc, char *argv[])
     }
 
     AppRuntime runtime;
+    runtime.offerBundleRunner = [bus](const std::string &path, const std::string &activationToken) {
+        dbus::Message call = bus->newMethodCall("org.cutefish.Services", "/org/cutefish/Services/BundleRunner",
+                                                "org.cutefish.Services.BundleRunner", "offer");
+        call.append(path, activationToken);
+        cutefish::core::callDetached(bus, call, [path](const dbus::Reply &reply) {
+            if (reply.isError())
+                CF_WARNING(log) << "Cannot offer a program to run" << path << reply.error().message;
+        });
+    };
 
     dbus::Object object(bus, kPath, kService);
     object.addMethod(

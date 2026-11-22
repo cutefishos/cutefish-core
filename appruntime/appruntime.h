@@ -2,6 +2,7 @@
 #define APPRUNTIME_H
 
 #include <cstdint>
+#include <functional>
 #include <map>
 #include <string>
 #include <vector>
@@ -36,6 +37,9 @@ public:
     bool isRunning(const std::string &appId) const;
     std::vector<std::string> runningApplications() const;
     std::vector<uint32_t> pidsForApplication(const std::string &appId) const;
+
+    // Gets a bundle while nothing runs bundles.
+    std::function<void(const std::string &path, const std::string &activationToken)> offerBundleRunner;
 
     cutefish::base::Signal<const std::string &, uint32_t> applicationLaunched;
     cutefish::base::Signal<const std::string &, uint32_t> applicationQuit;

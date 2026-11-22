@@ -2,6 +2,7 @@
 #include "applicationscope.h"
 #include "chromiumswitches.h"
 
+#include "base/application_bundle.h"
 #include "base/application_registry.h"
 #include "base/event_loop.h"
 #include "base/file.h"
@@ -71,6 +72,14 @@ uint32_t AppRuntime::launchApplication(const std::string &appId, const std::vect
                 name.resize(dot);
             entry = registry.byId(name);
         }
+    }
+
+    // While nothing runs bundles, a bundle has no command, or no entry until read.
+    const bool bundle = entry ? entry->bundle : !base::bundle::bundlePath(appId).empty();
+    if (bundle && !registry.runsBundles()) {
+        if (offerBundleRunner)
+            offerBundleRunner(entry ? entry->path : appId, activationToken);
+        return 0;
     }
 
     if (!entry) {
