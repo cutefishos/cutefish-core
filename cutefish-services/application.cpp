@@ -20,6 +20,7 @@
 
 #include "base/dbus.h"
 #include "base/paths.h"
+#include "dbuscall.h"
 #include "ui/application.h"
 #include "ui/theme.h"
 #include "log.h"
@@ -51,6 +52,18 @@ Application::Application()
     m_language->applyEnvironment = [](const std::map<std::string, std::string> &variables) {
         ui::Application::instance()->setLanguageEnvironment(variables);
     };
+    if (m_system) {
+        m_language->updateLoginLanguage = [this](const std::map<std::string, std::string> &variables) {
+            const dbus::Proxy manager(m_system, "org.cutefish.DisplayManager",
+                                      "/org/cutefish/DisplayManager", "org.cutefish.DisplayManager");
+            const auto done = [](const dbus::Reply &reply) {
+                if (reply.isError() && reply.error().name != "org.freedesktop.DBus.Error.ServiceUnknown")
+                    CF_WARNING(services::log()) << "Cannot hand the language to the login screen:"
+                                                << reply.error().message;
+            };
+            services::callDetached(manager, "SetLanguage", done, variables);
+        };
+    }
     m_language->generateLocale = [this](const std::string &locale, std::function<void(bool)> done) {
         dbus::Proxy locales(m_system, "org.cutefish.Locales", "/org/cutefish/Locales", "org.cutefish.Locales");
         // Generating takes a second or two per locale.

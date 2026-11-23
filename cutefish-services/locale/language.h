@@ -66,6 +66,8 @@ public:
     // Gives this process the new language variables, before its own text
     // follows; base::SessionLanguage::apply() unless set.
     std::function<void(const std::map<std::string, std::string> &variables)> applyEnvironment;
+    // Hands the user's language environment to the display manager for the login screen.
+    std::function<void(const std::map<std::string, std::string> &variables)> updateLoginLanguage;
     // Asks cutefish-locales for a locale the system lacks; `done` tells
     // whether it is there now.
     std::function<cutefish::base::dbus::PendingCall(const std::string &locale, std::function<void(bool)> done)>

@@ -150,6 +150,10 @@ TEST(LanguageServiceTest, RegionIsStoredAndPublished)
     language.applyEnvironment = [&published](const std::map<std::string, std::string> &variables) {
         published.push_back(variables);
     };
+    std::vector<std::map<std::string, std::string>> loginPublished;
+    language.updateLoginLanguage = [&loginPublished](const std::map<std::string, std::string> &variables) {
+        loginPublished.push_back(variables);
+    };
     std::vector<std::string> requested;
     language.generateLocale = [&](const std::string &locale, std::function<void(bool)>) {
         requested.push_back(locale);
@@ -160,6 +164,8 @@ TEST(LanguageServiceTest, RegionIsStoredAndPublished)
     language.setRegion("sg");
     EXPECT_EQ(language.region(), "SG");
     ASSERT_EQ(published.size(), 1u);
+    ASSERT_EQ(loginPublished.size(), 1u);
+    EXPECT_EQ(loginPublished.back(), published.back());
     if (language::isAvailable("en_SG.UTF-8"))
         EXPECT_EQ(published.back().at("LC_TIME"), "en_SG.UTF-8");
     EXPECT_EQ(Settings(directory.path() + "/services.conf").stringValue("Region/region"), "SG");

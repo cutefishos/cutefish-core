@@ -74,6 +74,8 @@ bool Language::publish()
     m_object->addSignal("languageChanged", "");
     if (!m_object->publish())
         return false;
+    if (updateLoginLanguage)
+        updateLoginLanguage(environment());
     // A language picked before its locale was there, or on another system.
     prepareLocale();
     return true;
@@ -267,6 +269,8 @@ void Language::publishEnvironment()
         applyEnvironment(activationEnvironment);
     else
         SessionLanguage::apply(activationEnvironment);
+    if (updateLoginLanguage)
+        updateLoginLanguage(activationEnvironment);
     emitLanguageChanged();
 }
 
