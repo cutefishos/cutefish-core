@@ -1,0 +1,311 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: cutefish-core\n"
+"Report-Msgid-Bugs-To: https://github.com\n"
+"POT-Creation-Date: 2026-11-22 18:34+0800\n"
+"PO-Revision-Date: 2026-11-22 18:34+0800\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Calculating…"
+msgstr "Hesaplanıyor…"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} until fully charged"
+msgstr "Tam doluma {time}"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} remaining"
+msgstr "{time} kaldı"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Fully charged."
+msgstr "Tamamen doldu."
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "Charging paused at {percent}%"
+msgstr "Şarj etme %{percent} seviyesinde duraklatıldı"
+
+#: cutefish-services/battery/battery.cpp
+msgid "Not charging"
+msgstr "Şarj olmuyor"
+
+#. TRANSLATORS: days in a short battery time such as "1d 2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}d"
+msgstr "{n}g"
+
+#. TRANSLATORS: hours in a short battery time such as "2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}h"
+msgstr "{n}s"
+
+#. TRANSLATORS: minutes in a short battery time such as "2h 5m".
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{n}m"
+msgstr "{n}dk"
+
+#. TRANSLATORS: when the battery was last fully charged, under a minute ago.
+#: cutefish-services/battery/battery.cpp
+msgid "now"
+msgstr "şimdi"
+
+#: cutefish-services/battery/battery.cpp
+#, python-brace-format
+msgid "{time} ago"
+msgstr "{time} önce"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Low Battery"
+msgstr "Düşük Pil"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Battery Critically Low"
+msgstr "Pil Kritik Seviyede Düşük"
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Battery Empty"
+msgstr "Pil Boş"
+
+#: cutefish-services/battery/batterywarning.cpp
+#, python-brace-format
+msgid "{percent}% of battery remaining ({time})."
+msgstr "Pilin %{percent} kadarı kaldı ({time})."
+
+#: cutefish-services/battery/batterywarning.cpp
+#, python-brace-format
+msgid "{percent}% of battery remaining."
+msgstr "Pilin %{percent} kadarı kaldı."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Save your work and connect to power. The computer will shut down when the battery is nearly empty."
+msgstr "Çalışmalarınızı kaydedin ve güç kaynağına bağlayın. Pil neredeyse boşaldığında bilgisayar kapanacaktır."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power. The computer will hibernate when the battery is nearly empty."
+msgstr "Güç kaynağına bağlayın. Pil neredeyse boşaldığında bilgisayar hazırda bekletme kipine geçecektir."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Save your work and connect to power. The computer will go to sleep when the battery is nearly empty."
+msgstr "Çalışmalarınızı kaydedin ve güç kaynağına bağlayın. Pil neredeyse boşaldığında bilgisayar uyku kipine geçecektir."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power soon."
+msgstr "Kısa süre içinde güç kaynağına bağlayın."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to shut down. Connect to power to keep it running."
+msgstr "Bilgisayar kapanmak üzere. Çalışmaya devam etmesi için güç kaynağına bağlayın."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to hibernate. Connect to power to keep it running."
+msgstr "Bilgisayar hazırda bekletme kipine geçmek üzere. Çalışmaya devam etmesi için güç kaynağına bağlayın."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "The computer is about to go to sleep. Connect to power to keep it running."
+msgstr "Bilgisayar uyku kipine geçmek üzere. Çalışmaya devam etmesi için güç kaynağına bağlayın."
+
+#: cutefish-services/battery/batterywarning.cpp
+msgid "Connect to power now."
+msgstr "Şimdi güç kaynağına bağlayın."
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Cancel"
+msgstr "İptal"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Install"
+msgstr "Yükle"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+#: cutefish-services/crash/crashdialog.cpp
+msgid "OK"
+msgstr "Tamam"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+#, python-brace-format
+msgid "To open “{name}”, Reef has to be downloaded and installed."
+msgstr "“{name}” uygulamasını açmak için Reef indirilmeli ve yüklenmelidir."
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Installing…"
+msgstr "Yükleniyor…"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Downloading…"
+msgstr "İndiriliyor…"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Looking for Reef…"
+msgstr "Reef aranıyor…"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Reef is not available for this computer."
+msgstr "Reef bu bilgisayar için kullanılamıyor."
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Reef could not be installed."
+msgstr "Reef yüklenemedi."
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Stop"
+msgstr "Durdur"
+
+#: cutefish-services/bundlerunner/installdialog.cpp
+msgid "Install Reef"
+msgstr "Reef'i Yükle"
+
+#: cutefish-services/crash/crashdialog.cpp
+#, python-brace-format
+msgid "“{name}” quit unexpectedly"
+msgstr "“{name}” beklenmedik şekilde sonlandı"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "Close"
+msgstr "Kapat"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "Reopen"
+msgstr "Yeniden Aç"
+
+#: cutefish-services/crash/crashdialog.cpp
+#, python-brace-format
+msgid "Reason: {reason}"
+msgstr "Neden: {reason}"
+
+#: cutefish-services/crash/crashdialog.cpp
+msgid "It is restarted automatically."
+msgstr "Otomatik olarak yeniden başlatılır."
+
+#: cutefish-services/crash/crashmanager.cpp
+msgid "Application Runtime"
+msgstr "Uygulama Çalışma Zamanı"
+
+#: cutefish-services/locale/language.cpp
+msgid "Some applications may need to be restarted for the change to take effect."
+msgstr "Değişikliğin etkili olması için bazı uygulamaların yeniden başlatılması gerekebilir."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+#, python-brace-format
+msgid "Share your screen with “{name}”"
+msgstr "Ekranınızı “{name}” ile paylaşın"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a display or a window. What is shown on it will be visible to the application until it stops sharing."
+msgstr "Bir ekran veya pencere seçin. Üzerinde gösterilenler, paylaşım durdurulana kadar uygulama tarafından görülebilecektir."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a window. Its contents will be visible to the application until it stops sharing."
+msgstr "Bir pencere seçin. İçeriği, paylaşım durdurulana kadar uygulama tarafından görülebilecektir."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Choose a display. Everything shown on it, including other windows, will be visible to the application until it stops sharing."
+msgstr "Bir ekran seçin. Diğer pencereler dahil üzerinde gösterilen her şey, paylaşım durdurulana kadar uygulama tarafından görülebilecektir."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Share"
+msgstr "Paylaş"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Windows"
+msgstr "Pencereler"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Displays"
+msgstr "Ekranlar"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Always allow this app"
+msgstr "Bu uygulamaya her zaman izin ver"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Let “An app” control this computer?"
+msgstr "“Bir uygulama” bu bilgisayarı kontrol etsin mi?"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+#, python-brace-format
+msgid "Let “{name}” control this computer?"
+msgstr "“{name}” bu bilgisayarı kontrol etsin mi?"
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "It will see your screen and use the pointer and keyboard until you stop it with the Stop button in the menu bar. Using the pointer or keyboard yourself pauses it, and it cannot answer system dialogs like this one."
+msgstr "Menü çubuğundaki Durdur düğmesiyle durdurana kadar ekranınızı görecek, işaretçiyi ve klavyeyi kullanacaktır. İşaretçiyi veya klavyeyi kendiniz kullanmanız işlemi duraklatır ve bu tür sistem iletişim kutularına yanıt veremez."
+
+#: cutefish-services/permissions/permissionprompt.cpp
+msgid "Allow"
+msgstr "İzin Ver"
+
+#: cutefish-services/softwareupdate/softwareupdate.cpp
+msgid "Updates Installed"
+msgstr "Güncellemeler Yüklendi"
+
+#: cutefish-services/softwareupdate/softwareupdate.cpp
+msgid "Restart the computer to finish installing them."
+msgstr "Kurulumu tamamlamak için bilgisayarı yeniden başlatın."
+
+#: cutefish-services/softwareupdate/softwareupdate.cpp
+msgid "Software Updates Available"
+msgstr "Yazılım Güncellemeleri Mevcut"
+
+#: cutefish-services/softwareupdate/softwareupdate.cpp
+#, python-brace-format
+msgid "{n} update is available for this computer."
+msgid_plural "{n} updates are available for this computer."
+msgstr[0] "Bu bilgisayar için {n} güncelleme mevcut."
+msgstr[1] "Bu bilgisayar için {n} güncelleme mevcut."
+
+#: session/processmanager.cpp
+msgid "Log out cancelled"
+msgstr "Oturumu kapatma iptal edildi"
+
+#: session/processmanager.cpp
+msgid "Restart cancelled"
+msgstr "Yeniden başlatma iptal edildi"
+
+#: session/processmanager.cpp
+msgid "Shutdown cancelled"
+msgstr "Kapatma iptal edildi"
+
+#: session/processmanager.cpp
+msgid "An application cancelled it."
+msgstr "Bir uygulama bunu iptal etti."
+
+#: session/processmanager.cpp
+msgid "An application did not quit."
+msgstr "Bir uygulama kapanmadı."
+
+#: session/processmanager.cpp
+#, python-brace-format
+msgid "{name} cancelled it."
+msgstr "{name} bunu iptal etti."
+
+#: session/processmanager.cpp
+#, python-brace-format
+msgid "{name} did not quit."
+msgstr "{name} kapanmadı."
+
+#. TRANSLATORS: the sender of a notification from the session itself.
+#: session/processmanager.cpp
+msgid "System"
+msgstr "Sistem"
+
+#: session/cutefish-wayland.desktop
+msgid "Cutefish (Wayland)"
+msgstr "Cutefish (Wayland)"
+
+#: session/cutefish-wayland.desktop
+msgid "Cutefish desktop session"
+msgstr "Cutefish masaüstü oturumu"
